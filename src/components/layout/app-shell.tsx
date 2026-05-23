@@ -8,8 +8,9 @@ import { PageTransition } from "@/components/layout/page-transition"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Topbar } from "@/components/layout/topbar"
 import { FloatingActionButton } from "@/components/ui/floating-action-button"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden"
 import { useShell } from "@/contexts/shell-context"
 import { cn } from "@/lib/utils"
 
@@ -74,6 +75,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             side="right"
             className="glass-sidebar w-[min(17rem,88vw)] border-sidebar-border/50 p-0 sm:max-w-xs"
           >
+            {/* SheetTitle is required by Radix for screen-reader accessibility.
+                The sidebar already has visible navigation landmarks, so we hide
+                the title visually while keeping it in the accessibility tree. */}
+            <VisuallyHidden.Root asChild>
+              <SheetTitle>قائمة التنقل</SheetTitle>
+            </VisuallyHidden.Root>
             <Sidebar onNavigate={() => setMobileOpen(false)} collapsed={false} />
           </SheetContent>
         </Sheet>
