@@ -23,9 +23,16 @@ export function FloatingActionButton({
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: 0.2, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
-        "fixed bottom-6 left-4 z-50 md:hidden",
+        // Fixed, above everything else
+        "fixed z-50 md:hidden",
+        // bottom-safe accounts for iPhone home indicator via env(safe-area-inset-bottom)
+        "bottom-safe",
+        // start-4: inline-start edge — right side in RTL, left side in LTR
+        "start-4",
         className
       )}
+      // Inline safe-area fallback for browsers that don't parse env() in Tailwind
+      style={{ bottom: "max(1.5rem, calc(1.5rem + env(safe-area-inset-bottom, 0px)))" }}
     >
       <Button
         size="lg"

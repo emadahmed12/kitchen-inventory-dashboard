@@ -24,6 +24,9 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   colorScheme: "light dark",
+  // cover lets the app extend edge-to-edge on notched devices;
+  // safe-area CSS env() vars then pull content back from the notch/home indicator.
+  viewportFit: "cover",
 }
 
 export const metadata: Metadata = {

@@ -1,6 +1,10 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
+  // Allow the dev server to accept requests from the local network IP
+  // so Android/iOS devices on the same Wi-Fi can access the app during development.
+  allowedDevOrigins: ["192.168.100.84"],
+
   async headers() {
     return [
       {

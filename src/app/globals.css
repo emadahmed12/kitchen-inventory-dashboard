@@ -120,12 +120,34 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    box-sizing: border-box;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
+
   html {
     @apply font-sans scroll-smooth;
+    /* Prevent horizontal scrollbar caused by overflowing children */
+    overflow-x: hidden;
+    /* Stable scroll position during page transitions */
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    overflow-x: hidden;
+    /* Remove grey flash on tap in Android Chrome */
+    -webkit-tap-highlight-color: transparent;
+    /* Slightly faster tap response on Android */
+    touch-action: manipulation;
+    /* Smooth font rendering on mobile */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* PWA standalone: prevent system-level overscroll / pull-to-refresh */
+  @media (display-mode: standalone) {
+    body {
+      overscroll-behavior: none;
+    }
   }
 }
 
@@ -186,13 +208,16 @@
   }
 
   .glass-sidebar {
-    @apply backdrop-blur-3xl supports-[backdrop-filter]:bg-sidebar/50;
+    /* Solid fallback for browsers/devices without backdrop-filter support */
+    background-color: var(--sidebar);
+    @apply supports-[backdrop-filter]:backdrop-blur-3xl supports-[backdrop-filter]:bg-sidebar/60;
     box-shadow:
       inset -1px 0 0 oklch(1 0 0 / 5%),
       4px 0 24px oklch(0 0 0 / 3%);
   }
 
   .dark .glass-sidebar {
+    background-color: oklch(0.13 0.016 265);
     box-shadow:
       inset -1px 0 0 oklch(1 0 0 / 8%),
       4px 0 32px oklch(0 0 0 / 25%);
@@ -261,5 +286,20 @@
 
   .scrollbar-none::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Safe-area aware bottom padding — used for FAB and bottom elements on notched devices */
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .bottom-safe {
+    bottom: max(1.5rem, calc(1.5rem + env(safe-area-inset-bottom, 0px)));
+  }
+
+  /* Smooth momentum scrolling on iOS inside overflow-y-auto containers */
+  .scroll-touch {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
   }
 }
