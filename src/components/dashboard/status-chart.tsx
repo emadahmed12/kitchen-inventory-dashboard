@@ -1,13 +1,8 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { motion } from "framer-motion"
-import {
-  Cell,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts"
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 
 import { STATUS_COLORS } from "@/lib/inventory/constants"
 import type { InventoryStatus } from "@/types/inventory"
@@ -25,6 +20,7 @@ type StatusChartProps = {
 }
 
 export function StatusChart({ data }: StatusChartProps) {
+  const t = useTranslations("statusChart")
   const total = data.reduce((s, d) => s + d.value, 0)
 
   return (
@@ -36,44 +32,21 @@ export function StatusChart({ data }: StatusChartProps) {
     >
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-semibold">توزيع الحالة</h3>
-          <p className="text-xs text-muted-foreground">حسب حالة المخزون</p>
+          <h3 className="text-sm font-semibold">{t("title")}</h3>
+          <p className="text-xs text-muted-foreground">{t("subtitle")}</p>
         </div>
-        <span className="text-2xl font-semibold tabular-nums">
-          {total.toLocaleString("ar-EG")}
-        </span>
+        <span className="text-2xl font-semibold tabular-nums">{total.toLocaleString()}</span>
       </div>
 
       <div className="h-48">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Pie
-              data={data}
-              cx="50%"
-              cy="50%"
-              innerRadius={52}
-              outerRadius={72}
-              paddingAngle={3}
-              dataKey="value"
-              stroke="transparent"
-            >
+            <Pie data={data} cx="50%" cy="50%" innerRadius={52} outerRadius={72} paddingAngle={3} dataKey="value" stroke="transparent">
               {data.map((entry) => (
-                <Cell
-                  key={entry.status}
-                  fill={STATUS_CHART_COLORS[entry.status]}
-                />
+                <Cell key={entry.status} fill={STATUS_CHART_COLORS[entry.status]} />
               ))}
             </Pie>
-            <Tooltip
-              contentStyle={{
-                borderRadius: 12,
-                border: "none",
-                fontSize: 12,
-              }}
-              formatter={(value) =>
-                `${Number(value).toLocaleString("ar-EG")} منتج`
-              }
-            />
+            <Tooltip contentStyle={{ borderRadius: 12, border: "none", fontSize: 12 }} />
           </PieChart>
         </ResponsiveContainer>
       </div>
@@ -81,16 +54,9 @@ export function StatusChart({ data }: StatusChartProps) {
       <div className="mt-3 grid grid-cols-2 gap-2">
         {data.map((d) => (
           <div key={d.status} className="flex items-center gap-2 text-xs">
-            <span
-              className={cn(
-                "size-2 rounded-full",
-                STATUS_COLORS[d.status].dot
-              )}
-            />
+            <span className={cn("size-2 rounded-full", STATUS_COLORS[d.status].dot)} />
             <span className="text-muted-foreground">{d.name}</span>
-            <span className="ms-auto font-medium tabular-nums">
-              {d.value.toLocaleString("ar-EG")}
-            </span>
+            <span className="ms-auto font-medium tabular-nums">{d.value.toLocaleString()}</span>
           </div>
         ))}
       </div>

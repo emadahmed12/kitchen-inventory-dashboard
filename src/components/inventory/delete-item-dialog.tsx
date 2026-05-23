@@ -1,14 +1,8 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import type { InventoryItem } from "@/types/inventory"
 
 type DeleteItemDialogProps = {
@@ -18,43 +12,21 @@ type DeleteItemDialogProps = {
   onConfirm: () => void
 }
 
-export function DeleteItemDialog({
-  item,
-  open,
-  onOpenChange,
-  onConfirm,
-}: DeleteItemDialogProps) {
+export function DeleteItemDialog({ item, open, onOpenChange, onConfirm }: DeleteItemDialogProps) {
+  const t = useTranslations("deleteDialog")
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-sm rounded-2xl">
         <DialogHeader>
-          <DialogTitle>حذف المنتج</DialogTitle>
+          <DialogTitle>{t("title")}</DialogTitle>
           <DialogDescription>
-            هل أنت متأكد من حذف{" "}
-            <span className="font-medium text-foreground">
-              {item?.name}
-            </span>
-            ؟ لا يمكن التراجع عن هذا الإجراء.
+            {t("description", { name: item?.name ?? "" })}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="gap-2 sm:gap-2">
-          <Button
-            variant="outline"
-            className="rounded-xl"
-            onClick={() => onOpenChange(false)}
-          >
-            إلغاء
-          </Button>
-          <Button
-            variant="destructive"
-            className="rounded-xl"
-            onClick={() => {
-              onConfirm()
-              onOpenChange(false)
-            }}
-          >
-            حذف
-          </Button>
+          <Button variant="outline" className="rounded-xl" onClick={() => onOpenChange(false)}>{t("cancel")}</Button>
+          <Button variant="destructive" className="rounded-xl" onClick={() => { onConfirm(); onOpenChange(false) }}>{t("confirm")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

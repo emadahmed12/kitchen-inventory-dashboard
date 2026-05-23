@@ -1,27 +1,13 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { motion } from "framer-motion"
-import {
-  ArrowDownAZ,
-  ChevronDown,
-  Grid3X3,
-  List,
-  Plus,
-  Search,
-  SlidersHorizontal,
-  X,
-} from "lucide-react"
+import { ArrowDownAZ, ChevronDown, Grid3X3, List, Plus, Search, SlidersHorizontal, X } from "lucide-react"
 
 import { CATEGORIES } from "@/data/catalog"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-import { SORT_LABELS, STATUS_LABELS } from "@/lib/inventory/constants"
 import type { CategoryId } from "@/types/catalog"
 import type { InventoryStatus } from "@/types/inventory"
 import type { SortOption, ViewMode } from "@/types/ui"
@@ -44,37 +30,27 @@ type InventoryToolbarProps = {
   resultCount: number
 }
 
-const categories: Array<{ value: CategoryId | "all"; label: string }> = [
-  { value: "all", label: "الكل" },
-  ...CATEGORIES.map((c) => ({ value: c.id, label: c.label })),
-]
-
-const statuses: Array<{ value: InventoryStatus | "all"; label: string }> = [
-  { value: "all", label: "الكل" },
-  ...Object.entries(STATUS_LABELS).map(([value, label]) => ({
-    value: value as InventoryStatus,
-    label,
-  })),
-]
-
-const sortOptions = Object.entries(SORT_LABELS) as [SortOption, string][]
+const STATUS_KEYS: Array<InventoryStatus | "all"> = ["all", "healthy", "opened", "low", "almost_finished"]
+const SORT_KEYS: SortOption[] = ["name-asc", "name-desc", "quantity-desc", "quantity-asc", "status", "updated-desc"]
 
 export function InventoryToolbar({
-  search,
-  onSearchChange,
-  category,
-  onCategoryChange,
-  status,
-  onStatusChange,
-  sort,
-  onSortChange,
-  view,
-  onViewChange,
-  onAddClick,
-  onClearFilters,
-  hasActiveFilters,
-  resultCount,
+  search, onSearchChange, category, onCategoryChange, status, onStatusChange,
+  sort, onSortChange, view, onViewChange, onAddClick, onClearFilters,
+  hasActiveFilters, resultCount,
 }: InventoryToolbarProps) {
+  const t = useTranslations("inventory")
+  const tStatus = useTranslations("status")
+  const tSort = useTranslations("sort")
+  const tCatalog = useTranslations("catalog.categories")
+
+  const categories: Array<{ value: CategoryId | "all"; label: string }> = [
+    { value: "all", label: t("all") },
+    ...CATEGORIES.map((c) => ({ value: c.id, label: tCatalog(c.id) })),
+  ]
+
+  const statusLabel = (s: InventoryStatus | "all") => s === "all" ? t("all") : tStatus(s)
+  const sortLabel = (s: SortOption) => tSort(s)
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -84,46 +60,27 @@ export function InventoryToolbar({
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative min-w-0 flex-1 sm:max-w-md">
-          <Search
-            className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-            strokeWidth={1.75}
-          />
+          <Search className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" strokeWidth={1.75} />
           <Input
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="ابحث في المنتجات..."
+            placeholder={t("searchPlaceholder")}
             className="h-10 rounded-2xl border-transparent bg-muted/40 ps-10 text-sm shadow-none transition-all duration-200 focus-visible:border-border/60 focus-visible:bg-background/80"
           />
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex rounded-xl bg-muted/50 p-0.5 ring-1 ring-foreground/[0.06]">
-            <Button
-              variant={view === "grid" ? "secondary" : "ghost"}
-              size="icon-sm"
-              className="rounded-lg"
-              onClick={() => onViewChange("grid")}
-              aria-label="عرض شبكي"
-            >
+            <Button variant={view === "grid" ? "secondary" : "ghost"} size="icon-sm" className="rounded-lg" onClick={() => onViewChange("grid")} aria-label={t("gridView")}>
               <Grid3X3 className="size-4" strokeWidth={1.75} />
             </Button>
-            <Button
-              variant={view === "list" ? "secondary" : "ghost"}
-              size="icon-sm"
-              className="rounded-lg"
-              onClick={() => onViewChange("list")}
-              aria-label="عرض قائمة"
-            >
+            <Button variant={view === "list" ? "secondary" : "ghost"} size="icon-sm" className="rounded-lg" onClick={() => onViewChange("list")} aria-label={t("listView")}>
               <List className="size-4" strokeWidth={1.75} />
             </Button>
           </div>
-
-          <Button
-            className="hidden rounded-xl gap-1.5 sm:inline-flex"
-            onClick={onAddClick}
-          >
+          <Button className="hidden rounded-xl gap-1.5 sm:inline-flex" onClick={onAddClick}>
             <Plus className="size-4" strokeWidth={2} />
-            إضافة منتج
+            {t("addItem")}
           </Button>
         </div>
       </div>
@@ -135,10 +92,7 @@ export function InventoryToolbar({
               key={cat.value}
               variant={category === cat.value ? "secondary" : "ghost"}
               size="sm"
-              className={cn(
-                "shrink-0 rounded-full px-3.5",
-                category === cat.value && "shadow-sm ring-1 ring-foreground/8"
-              )}
+              className={cn("shrink-0 rounded-full px-3.5", category === cat.value && "shadow-sm ring-1 ring-foreground/8")}
               onClick={() => onCategoryChange(cat.value)}
             >
               {cat.label}
@@ -151,18 +105,13 @@ export function InventoryToolbar({
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="rounded-xl gap-1.5">
                 <SlidersHorizontal className="size-3.5" />
-                {statuses.find((s) => s.value === status)?.label}
+                {statusLabel(status)}
                 <ChevronDown className="size-3.5 opacity-60" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="rounded-xl">
-              {statuses.map((s) => (
-                <DropdownMenuItem
-                  key={s.value}
-                  onClick={() => onStatusChange(s.value)}
-                >
-                  {s.label}
-                </DropdownMenuItem>
+              {STATUS_KEYS.map((s) => (
+                <DropdownMenuItem key={s} onClick={() => onStatusChange(s)}>{statusLabel(s)}</DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -171,36 +120,28 @@ export function InventoryToolbar({
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="rounded-xl gap-1.5">
                 <ArrowDownAZ className="size-3.5" />
-                {SORT_LABELS[sort]}
+                {sortLabel(sort)}
                 <ChevronDown className="size-3.5 opacity-60" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="rounded-xl">
-              {sortOptions.map(([value, label]) => (
-                <DropdownMenuItem key={value} onClick={() => onSortChange(value)}>
-                  {label}
-                </DropdownMenuItem>
+              {SORT_KEYS.map((s) => (
+                <DropdownMenuItem key={s} onClick={() => onSortChange(s)}>{sortLabel(s)}</DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
 
           {hasActiveFilters && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="rounded-xl gap-1 text-muted-foreground"
-              onClick={onClearFilters}
-            >
+            <Button variant="ghost" size="sm" className="rounded-xl gap-1 text-muted-foreground" onClick={onClearFilters}>
               <X className="size-3.5" />
-              مسح
+              {t("clearFilters")}
             </Button>
           )}
         </div>
       </div>
 
       <p className="text-xs text-muted-foreground">
-        {resultCount.toLocaleString("ar-EG")} منتج
-        {hasActiveFilters ? " مطابق للفلاتر" : ""}
+        {hasActiveFilters ? t("resultsFiltered", { count: resultCount }) : t("results", { count: resultCount })}
       </p>
     </motion.div>
   )

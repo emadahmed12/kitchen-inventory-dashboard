@@ -9,16 +9,17 @@ import {
 } from "lucide-react"
 
 export type NavItem = {
-  title: string
+  /** Translation key within the "nav" namespace */
+  titleKey: "dashboard" | "inventory" | "shopping" | "storage" | "analytics" | "settings"
   href: string
   icon: LucideIcon
 }
 
 export const navItems: NavItem[] = [
-  { title: "نظرة عامة", href: "/", icon: LayoutDashboard },
-  { title: "المخزون", href: "/inventory", icon: Package },
-  { title: "قائمة التسوق", href: "/shopping", icon: ShoppingCart },
-  { title: "أماكن التخزين", href: "/storage", icon: Warehouse },
-  { title: "التحليلات", href: "/analytics", icon: BarChart3 },
-  { title: "الإعدادات", href: "/settings", icon: Settings },
+  { titleKey: "dashboard", href: "/", icon: LayoutDashboard },
+  { titleKey: "inventory", href: "/inventory", icon: Package },
+  { titleKey: "shopping", href: "/shopping", icon: ShoppingCart },
+  { titleKey: "storage", href: "/storage", icon: Warehouse },
+  { titleKey: "analytics", href: "/analytics", icon: BarChart3 },
+  { titleKey: "settings", href: "/settings", icon: Settings },
 ]

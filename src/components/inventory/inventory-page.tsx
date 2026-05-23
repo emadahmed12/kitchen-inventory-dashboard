@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
+import { useTranslations } from "next-intl"
 import { motion } from "framer-motion"
 import { toast } from "sonner"
 
@@ -16,83 +17,48 @@ import type { InventoryItem, InventoryItemInput } from "@/types/inventory"
 
 export function InventoryPage() {
   const {
-    filteredItems,
-    stats,
-    hydrated,
-    search,
-    setSearch,
-    category,
-    setCategory,
-    status,
-    setStatus,
-    sort,
-    setSort,
-    view,
-    setViewMode,
-    addItem,
-    updateItem,
-    deleteItem,
-    updateQuantity,
-    clearFilters,
-    hasActiveFilters,
+    filteredItems, stats, hydrated,
+    search, setSearch, category, setCategory, status, setStatus,
+    sort, setSort, view, setViewMode, addItem, updateItem, deleteItem,
+    updateQuantity, clearFilters, hasActiveFilters,
   } = useInventory()
 
   const { registerAddItem, searchQuery, setSearchQuery } = useShell()
+  const t = useTranslations("inventory")
+  const tToast = useTranslations("toast")
 
   const [formOpen, setFormOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null)
   const [deletingItem, setDeletingItem] = useState<InventoryItem | null>(null)
 
-  const openAdd = useCallback(() => {
-    setEditingItem(null)
-    setFormOpen(true)
-  }, [])
+  const openAdd = useCallback(() => { setEditingItem(null); setFormOpen(true) }, [])
+
+  useEffect(() => { registerAddItem(openAdd); return () => registerAddItem(null) }, [registerAddItem, openAdd])
 
   useEffect(() => {
-    registerAddItem(openAdd)
-    return () => registerAddItem(null)
-  }, [registerAddItem, openAdd])
-
-  useEffect(() => {
-    if (searchQuery) {
-      setSearch(searchQuery)
-      setSearchQuery("")
-    }
+    if (searchQuery) { setSearch(searchQuery); setSearchQuery("") }
   }, [searchQuery, setSearch, setSearchQuery])
 
-  function handleEdit(item: InventoryItem) {
-    setEditingItem(item)
-    setFormOpen(true)
-  }
-
-  function handleDelete(item: InventoryItem) {
-    setDeletingItem(item)
-  }
+  function handleEdit(item: InventoryItem) { setEditingItem(item); setFormOpen(true) }
+  function handleDelete(item: InventoryItem) { setDeletingItem(item) }
 
   function handleFormSubmit(data: InventoryItemInput) {
     if (editingItem) {
       updateItem(editingItem.id, data)
-      toast.success("تم تحديث المنتج", { description: data.name })
+      toast.success(tToast("updated"), { description: data.name })
     } else {
       addItem(data)
-      toast.success("تمت الإضافة", { description: data.name })
+      toast.success(tToast("added"), { description: data.name })
     }
     setEditingItem(null)
   }
 
-  function handleFormOpenChange(open: boolean) {
-    setFormOpen(open)
-    if (!open) setEditingItem(null)
-  }
-
-  function handleQuantityChange(id: string, quantity: number) {
-    updateQuantity(id, quantity)
-  }
+  function handleFormOpenChange(open: boolean) { setFormOpen(open); if (!open) setEditingItem(null) }
 
   function handleDeleteConfirm() {
     if (deletingItem) {
       deleteItem(deletingItem.id)
-      toast.success("تم الحذف", { description: deletingItem.name })
+      toast.success(tToast("deleted"), { description: deletingItem.name })
       setDeletingItem(null)
     }
   }
@@ -105,49 +71,28 @@ export function InventoryPage() {
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         className="space-y-1"
       >
-        <h1 className="text-2xl font-semibold tracking-tight md:text-[1.75rem]">
-          المخزون
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          كل منتجات مطبخك — مرتّبة، قابلة للبحث، ومحدّثة فوراً.
-        </p>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-[1.75rem]">{t("title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
       </motion.div>
 
       <InventoryStats {...stats} />
 
       <InventoryToolbar
-        search={search}
-        onSearchChange={setSearch}
-        category={category}
-        onCategoryChange={setCategory}
-        status={status}
-        onStatusChange={setStatus}
-        sort={sort}
-        onSortChange={setSort}
-        view={view}
-        onViewChange={setViewMode}
-        onAddClick={openAdd}
-        onClearFilters={clearFilters}
-        hasActiveFilters={hasActiveFilters}
-        resultCount={filteredItems.length}
+        search={search} onSearchChange={setSearch}
+        category={category} onCategoryChange={setCategory}
+        status={status} onStatusChange={setStatus}
+        sort={sort} onSortChange={setSort}
+        view={view} onViewChange={setViewMode}
+        onAddClick={openAdd} onClearFilters={clearFilters}
+        hasActiveFilters={hasActiveFilters} resultCount={filteredItems.length}
       />
 
       <InventoryView
-        items={filteredItems}
-        view={view}
-        hydrated={hydrated}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onQuantityChange={handleQuantityChange}
+        items={filteredItems} view={view} hydrated={hydrated}
+        onEdit={handleEdit} onDelete={handleDelete} onQuantityChange={updateQuantity}
       />
 
-      <ItemFormDialog
-        open={formOpen}
-        onOpenChange={handleFormOpenChange}
-        item={editingItem}
-        onSubmit={handleFormSubmit}
-      />
-
+      <ItemFormDialog open={formOpen} onOpenChange={handleFormOpenChange} item={editingItem} onSubmit={handleFormSubmit} />
       <DeleteItemDialog
         item={deletingItem}
         open={Boolean(deletingItem)}

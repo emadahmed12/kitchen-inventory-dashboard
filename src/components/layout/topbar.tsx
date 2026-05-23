@@ -1,21 +1,13 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import Link from "next/link"
+import { useTranslations } from "next-intl"
 import { motion, AnimatePresence } from "framer-motion"
-import {
-  Bell,
-  Command,
-  LogOut,
-  Menu,
-  Moon,
-  Search,
-  Settings,
-  Sun,
-  User,
-} from "lucide-react"
+import { Bell, Command, LogOut, Menu, Moon, Search, Settings, Sun, User } from "lucide-react"
 import { useTheme } from "next-themes"
 
+import { Link } from "@/i18n/navigation"
+import { LanguageSwitcher } from "@/components/layout/language-switcher"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -25,27 +17,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
 import { useShell } from "@/contexts/shell-context"
 import { getLowStockItems } from "@/lib/inventory/stats"
 import { useInventoryItems } from "@/hooks/use-inventory"
 import { cn } from "@/lib/utils"
 
-type TopbarProps = {
-  onMenuClick?: () => void
-}
+type TopbarProps = { onMenuClick?: () => void }
 
 export function Topbar({ onMenuClick }: TopbarProps) {
   const { resolvedTheme, setTheme } = useTheme()
   const { setCommandOpen } = useShell()
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
+  const t = useTranslations("topbar")
 
   const inventoryItems = useInventoryItems()
-  const alerts = useMemo(
-    () => getLowStockItems(inventoryItems),
-    [inventoryItems]
-  )
+  const alerts = useMemo(() => getLowStockItems(inventoryItems), [inventoryItems])
 
   return (
     <motion.header
@@ -59,7 +46,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
         size="icon-sm"
         className="rounded-xl md:hidden"
         onClick={onMenuClick}
-        aria-label="فتح القائمة"
+        aria-label={t("openMenu")}
       >
         <Menu className="size-5" strokeWidth={1.75} />
       </Button>
@@ -67,16 +54,14 @@ export function Topbar({ onMenuClick }: TopbarProps) {
       <button
         type="button"
         onClick={() => setCommandOpen(true)}
-        className={cn(
-          "relative hidden min-w-0 flex-1 items-center md:flex md:max-w-sm lg:max-w-md"
-        )}
+        className={cn("relative hidden min-w-0 flex-1 items-center md:flex md:max-w-sm lg:max-w-md")}
       >
         <Search
           className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
           strokeWidth={1.75}
         />
         <div className="flex h-10 w-full items-center rounded-2xl border border-transparent bg-muted/40 ps-10 pe-20 text-sm text-muted-foreground transition-all duration-200 hover:border-border/40 hover:bg-background/60">
-          ابحث في المخزون أو الأوامر...
+          {t("searchPlaceholder")}
         </div>
         <kbd className="pointer-events-none absolute end-3 top-1/2 hidden -translate-y-1/2 items-center gap-0.5 rounded-md bg-background/80 px-1.5 py-0.5 text-[10px] text-muted-foreground ring-1 ring-border/60 sm:flex">
           <Command className="size-2.5" />K
@@ -89,20 +74,22 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           size="icon-sm"
           className="rounded-xl md:hidden"
           onClick={() => setCommandOpen(true)}
-          aria-label="بحث"
+          aria-label={t("searchButton")}
         >
           <Search className="size-4" strokeWidth={1.75} />
         </Button>
 
+        {/* Language switcher */}
+        <LanguageSwitcher />
+
+        {/* Theme toggle */}
         <motion.div whileTap={{ scale: 0.92 }}>
           <Button
             variant="ghost"
             size="icon-sm"
             className="relative rounded-xl"
-            onClick={() =>
-              setTheme(resolvedTheme === "dark" ? "light" : "dark")
-            }
-            aria-label="تبديل الوضع"
+            onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+            aria-label={t("toggleTheme")}
           >
             <AnimatePresence mode="wait" initial={false}>
               <motion.span
@@ -123,13 +110,10 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           </Button>
         </motion.div>
 
+        {/* Notifications */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="relative rounded-xl"
-            >
+            <Button variant="ghost" size="icon-sm" className="relative rounded-xl">
               <Bell className="size-4" strokeWidth={1.75} />
               {alerts.length > 0 && (
                 <span className="absolute top-1 end-1 flex size-2">
@@ -140,19 +124,17 @@ export function Topbar({ onMenuClick }: TopbarProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-72 rounded-2xl p-2">
-            <p className="px-2 py-1.5 text-xs font-semibold">الإشعارات</p>
+            <p className="px-2 py-1.5 text-xs font-semibold">{t("notifications")}</p>
             {alerts.length === 0 ? (
               <p className="px-2 py-4 text-center text-xs text-muted-foreground">
-                لا إشعارات جديدة
+                {t("noNotifications")}
               </p>
             ) : (
               alerts.map((item) => (
                 <DropdownMenuItem key={item.id} asChild>
                   <Link href="/inventory" className="flex flex-col items-start gap-0.5">
                     <span className="font-medium">{item.name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      مخزون منخفض
-                    </span>
+                    <span className="text-xs text-muted-foreground">{t("lowStock")}</span>
                   </Link>
                 </DropdownMenuItem>
               ))
@@ -160,34 +142,33 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           </DropdownMenuContent>
         </DropdownMenu>
 
+        {/* User menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-9 gap-2 rounded-xl px-1.5">
               <Avatar className="size-8 rounded-xl">
                 <AvatarFallback className="rounded-xl bg-muted text-xs font-medium">
-                  م
+                  {t("userInitial")}
                 </AvatarFallback>
               </Avatar>
-              <span className="hidden text-sm font-medium lg:inline">
-                المطبخ
-              </span>
+              <span className="hidden text-sm font-medium lg:inline">{t("userName")}</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-52 rounded-2xl">
             <DropdownMenuItem>
               <User className="size-4" />
-              الملف الشخصي
+              {t("profile")}
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link href="/settings">
                 <Settings className="size-4" />
-                الإعدادات
+                <span>{t("notifications")}</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem variant="destructive">
               <LogOut className="size-4" />
-              تسجيل الخروج
+              {t("logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

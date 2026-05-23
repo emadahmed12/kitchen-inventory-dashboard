@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { usePathname } from "next/navigation"
+import { useTranslations } from "next-intl"
 
 import { CommandPalette } from "@/components/command/command-palette"
 import { PageTransition } from "@/components/layout/page-transition"
@@ -18,26 +19,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const pathname = usePathname()
   const { sidebarCollapsed, triggerAddItem } = useShell()
-  const showFab = pathname === "/inventory"
+  const t = useTranslations("sidebar")
+  const tInv = useTranslations("inventory")
+
+  // Match both /inventory and /en/inventory
+  const showFab = pathname.endsWith("/inventory")
 
   return (
     <TooltipProvider delayDuration={200}>
-      {/*
-       * Outer shell: exact viewport height, no overflow.
-       * Using h-dvh (dynamic viewport height) so the layout tracks
-       * the Android Chrome URL bar show/hide correctly.
-       * overflow-hidden prevents any child from causing horizontal scroll.
-       */}
       <div className="relative flex h-dvh w-full flex-col overflow-hidden">
-        {/* Ambient background — fixed behind all content */}
-        <div
-          className="ambient-bg pointer-events-none fixed inset-0 -z-10"
-          aria-hidden
-        />
+        <div className="ambient-bg pointer-events-none fixed inset-0 -z-10" aria-hidden />
 
-        {/* Main row: sidebar + content */}
         <div className="flex min-h-0 flex-1 overflow-hidden">
-          {/* Desktop sidebar — hidden on mobile, full height on md+ */}
           <div
             className={cn(
               "glass-sidebar hidden h-full shrink-0 border-e border-sidebar-border/50 md:flex md:flex-col",
@@ -47,20 +40,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Sidebar />
           </div>
 
-          {/*
-           * Content column: topbar + scrollable main.
-           * overflow-hidden on the column prevents sidebar-bleed,
-           * overflow-y-auto on main is the ONLY scroll surface.
-           */}
           <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
             <Topbar onMenuClick={() => setMobileOpen(true)} />
-
             <main
               className={cn(
-                "flex-1 overflow-x-hidden overflow-y-auto",
-                "scroll-touch", // momentum scrolling + contain overscroll
+                "flex-1 overflow-x-hidden overflow-y-auto scroll-touch",
                 "px-3 py-4 md:px-6 md:py-6",
-                // Extra bottom padding so FAB / safe area never covers last card
                 showFab && "pb-24 md:pb-8"
               )}
             >
@@ -69,17 +54,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
 
-        {/* Mobile sheet sidebar — slides from the inline-start edge (right in RTL) */}
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetContent
             side="right"
             className="glass-sidebar w-[min(17rem,88vw)] border-sidebar-border/50 p-0 sm:max-w-xs"
           >
-            {/* SheetTitle is required by Radix for screen-reader accessibility.
-                The sidebar already has visible navigation landmarks, so we hide
-                the title visually while keeping it in the accessibility tree. */}
             <VisuallyHidden.Root asChild>
-              <SheetTitle>قائمة التنقل</SheetTitle>
+              <SheetTitle>{t("navLabel")}</SheetTitle>
             </VisuallyHidden.Root>
             <Sidebar onNavigate={() => setMobileOpen(false)} collapsed={false} />
           </SheetContent>
@@ -88,10 +69,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <CommandPalette />
 
         {showFab && (
-          <FloatingActionButton
-            onClick={triggerAddItem}
-            label="إضافة منتج"
-          />
+          <FloatingActionButton onClick={triggerAddItem} label={tInv("addItem")} />
         )}
       </div>
     </TooltipProvider>

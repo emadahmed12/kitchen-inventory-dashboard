@@ -1,14 +1,14 @@
 import type { NextConfig } from "next"
+import createNextIntlPlugin from "next-intl/plugin"
+
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts")
 
 const nextConfig: NextConfig = {
-  // Allow the dev server to accept requests from the local network IP
-  // so Android/iOS devices on the same Wi-Fi can access the app during development.
   allowedDevOrigins: ["192.168.100.84"],
 
   async headers() {
     return [
       {
-        // Security headers for all routes
         source: "/(.*)",
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
@@ -19,7 +19,6 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Service worker must never be cached by the browser
         source: "/sw.js",
         headers: [
           { key: "Content-Type", value: "application/javascript; charset=utf-8" },
@@ -28,7 +27,6 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Manifest: short cache so updates propagate quickly
         source: "/manifest.webmanifest",
         headers: [
           { key: "Content-Type", value: "application/manifest+json; charset=utf-8" },
@@ -36,7 +34,6 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Icons: long cache, they rarely change
         source: "/icons/(.*)",
         headers: [
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
@@ -46,4 +43,4 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+export default withNextIntl(nextConfig)

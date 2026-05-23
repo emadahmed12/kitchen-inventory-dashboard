@@ -1,0 +1,216 @@
+{
+  "meta": {
+    "appName": "مطبخي",
+    "appDescription": "تطبيق ذكي لإدارة مخزون مطبخك. تتبع المنتجات، تنبيهات نفاد المخزون، وتنظيم مشترياتك.",
+    "title": "مطبخي — إدارة المخزون"
+  },
+  "nav": {
+    "dashboard": "نظرة عامة",
+    "inventory": "المخزون",
+    "shopping": "قائمة التسوق",
+    "storage": "أماكن التخزين",
+    "analytics": "التحليلات",
+    "settings": "الإعدادات"
+  },
+  "language": {
+    "ar": "العربية",
+    "en": "English",
+    "switchLabel": "تغيير اللغة"
+  },
+  "topbar": {
+    "searchPlaceholder": "ابحث في المخزون أو الأوامر...",
+    "openMenu": "فتح القائمة",
+    "searchButton": "بحث",
+    "toggleTheme": "تبديل الوضع",
+    "notifications": "الإشعارات",
+    "noNotifications": "لا إشعارات جديدة",
+    "lowStock": "مخزون منخفض",
+    "profile": "الملف الشخصي",
+    "logout": "تسجيل الخروج",
+    "userName": "المطبخ",
+    "userInitial": "م"
+  },
+  "sidebar": {
+    "brandName": "مطبخي",
+    "brandSubtitle": "إدارة المخزون",
+    "collapse": "طي القائمة",
+    "expand": "توسيع القائمة",
+    "footer": "مطبخي · ٢٠٢٦",
+    "navLabel": "قائمة التنقل"
+  },
+  "dashboard": {
+    "title": "نظرة عامة",
+    "subtitle": "ملخص ذكي لمخزون مطبخك — محدّث لحظياً.",
+    "total": "إجمالي المنتجات",
+    "totalHint": "كل العناصر المسجّلة",
+    "opened": "المنتجات المفتوحة",
+    "openedHint": "قيد الاستخدام",
+    "needsAttention": "يحتاج انتباه",
+    "needsAttentionHint": "منخفض أو قارب على الانتهاء",
+    "categories": "الفئات",
+    "categoriesHint": "تصنيفات نشطة"
+  },
+  "alerts": {
+    "title": "تنبيهات المخزون",
+    "subtitle": "يحتاج انتباهك",
+    "viewAll": "عرض الكل",
+    "empty": "لا توجد تنبيهات حالياً — مخزونك ممتاز."
+  },
+  "activity": {
+    "title": "آخر النشاط",
+    "subtitle": "تحديثات المخزون",
+    "updated": "تحديث",
+    "minutesAgo": "منذ {count} د",
+    "hoursAgo": "منذ {count} س",
+    "daysAgo": "منذ {count} ي"
+  },
+  "categoryChart": {
+    "title": "الفئات",
+    "subtitle": "أكثر الفئات تخزيناً"
+  },
+  "statusChart": {
+    "title": "حالة المخزون",
+    "subtitle": "توزيع العناصر حسب الحالة"
+  },
+  "storageOccupancy": {
+    "title": "إشغال أماكن التخزين",
+    "subtitle": "حسب الموقع",
+    "items": "{count} منتج",
+    "fullPercent": "{pct}% ممتلئ"
+  },
+  "insights": {
+    "low": {
+      "title": "تنبيه مخزون",
+      "body": "{count} منتجات تحتاج إعادة تموين قريباً."
+    },
+    "opened": {
+      "title": "منتجات مفتوحة",
+      "body": "{count} عناصر مفتوحة — راجع تواريخ الاستخدام."
+    },
+    "pasta": {
+      "title": "مخزون المعكرونة",
+      "body": "لديك مخزون معكرونة جيد — مثالي للوجبات السريعة."
+    },
+    "ok": {
+      "title": "كل شيء منظم",
+      "body": "مخزونك متوازن اليوم. استمر في التحديث."
+    }
+  },
+  "inventory": {
+    "title": "المخزون",
+    "subtitle": "كل منتجات مطبخك — مرتّبة، قابلة للبحث، ومحدّثة فوراً.",
+    "searchPlaceholder": "ابحث في المنتجات...",
+    "addItem": "إضافة منتج",
+    "gridView": "عرض شبكي",
+    "listView": "عرض قائمة",
+    "clearFilters": "مسح",
+    "all": "الكل",
+    "results": "{count} منتج",
+    "resultsFiltered": "{count} منتج مطابق للفلاتر",
+    "statTotal": "إجمالي المنتجات",
+    "statOpened": "المنتجات المفتوحة",
+    "statLow": "مخزون منخفض",
+    "statCategories": "الفئات",
+    "quantity": "الكمية",
+    "editItem": "تعديل المنتج",
+    "quickAdd": "+١ سريع",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "decrease": "تقليل",
+    "increase": "زيادة"
+  },
+  "form": {
+    "addTitle": "إضافة منتج",
+    "editTitle": "تعديل المنتج",
+    "addDesc": "أضف منتجاً جديداً إلى مخزون المطبخ.",
+    "editDesc": "حدّث تفاصيل المنتج في المخزون.",
+    "name": "اسم المنتج",
+    "namePlaceholder": "مثال: كيس رز",
+    "quantity": "الكمية",
+    "threshold": "حد التنبيه",
+    "unit": "الوحدة",
+    "category": "الفئة",
+    "location": "مكان التخزين",
+    "stockStatus": "حالة المخزون",
+    "notes": "ملاحظات (اختياري)",
+    "notesPlaceholder": "مفتوح، كيلو، ...",
+    "cancel": "إلغاء",
+    "save": "حفظ التعديلات",
+    "add": "إضافة"
+  },
+  "deleteDialog": {
+    "title": "حذف المنتج",
+    "description": "هل أنت متأكد من حذف {name}؟ لا يمكن التراجع عن هذا الإجراء.",
+    "cancel": "إلغاء",
+    "confirm": "حذف"
+  },
+  "toast": {
+    "added": "تمت الإضافة",
+    "updated": "تم تحديث المنتج",
+    "deleted": "تم الحذف"
+  },
+  "status": {
+    "healthy": "سليم",
+    "opened": "مفتوح",
+    "low": "مخزون منخفض",
+    "almost_finished": "قارب على الانتهاء"
+  },
+  "sort": {
+    "name-asc": "الاسم (أ-ي)",
+    "name-desc": "الاسم (ي-أ)",
+    "quantity-desc": "الكمية (الأكثر)",
+    "quantity-asc": "الكمية (الأقل)",
+    "status": "حالة المخزون",
+    "updated-desc": "آخر تحديث"
+  },
+  "catalog": {
+    "categories": {
+      "canned": "معلبات",
+      "grains": "حبوب",
+      "pasta": "مكرونات",
+      "bread": "خبز",
+      "beverages": "مشروبات",
+      "spices": "توابل",
+      "oils": "زيوت"
+    },
+    "locations": {
+      "kitchen": "المطبخ",
+      "fridge": "الثلاجة",
+      "freezer": "الفريزر",
+      "pantry": "المخزن"
+    },
+    "units": {
+      "kg": "كيلو",
+      "can": "علبة",
+      "bag": "كيس",
+      "bottle": "زجاجة",
+      "kg_plural": "كيلو",
+      "can_plural": "علب",
+      "bag_plural": "أكياس",
+      "bottle_plural": "زجاجات"
+    }
+  },
+  "command": {
+    "searchPlaceholder": "ابحث عن منتج أو أمر...",
+    "quickActions": "إجراءات سريعة",
+    "navigation": "التنقل",
+    "products": "المنتجات",
+    "noResults": "لا توجد نتائج",
+    "addItem": "إضافة منتج",
+    "lightMode": "وضع فاتح",
+    "darkMode": "وضع داكن"
+  },
+  "pwa": {
+    "installTitle": "تثبيت مطبخي",
+    "installBody": "أضف التطبيق للشاشة الرئيسية للوصول السريع دون إنترنت",
+    "installNow": "تثبيت الآن",
+    "iosInstructions": "اضغط على زر المشاركة في سفاري، ثم اختر إضافة للشاشة الرئيسية",
+    "dismiss": "إغلاق"
+  },
+  "pages": {
+    "shopping": { "title": "قائمة التسوق", "comingSoon": "قريباً" },
+    "analytics": { "title": "التحليلات", "comingSoon": "قريباً" },
+    "settings": { "title": "الإعدادات", "comingSoon": "قريباً" },
+    "storage": { "title": "أماكن التخزين", "comingSoon": "قريباً" }
+  }
+}

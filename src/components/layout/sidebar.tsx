@@ -1,10 +1,11 @@
 "use client"
 
-import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { motion } from "framer-motion"
 import { ChefHat, PanelRightClose, PanelRightOpen } from "lucide-react"
 
+import { Link } from "@/i18n/navigation"
 import { navItems } from "@/components/layout/nav-config"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,14 +22,12 @@ type SidebarProps = {
   collapsed?: boolean
 }
 
-export function Sidebar({
-  className,
-  onNavigate,
-  collapsed: collapsedProp,
-}: SidebarProps) {
+export function Sidebar({ className, onNavigate, collapsed: collapsedProp }: SidebarProps) {
   const pathname = usePathname()
   const { sidebarCollapsed, toggleSidebar } = useShell()
   const collapsed = collapsedProp ?? sidebarCollapsed
+  const t = useTranslations("nav")
+  const ts = useTranslations("sidebar")
 
   return (
     <aside
@@ -38,12 +37,7 @@ export function Sidebar({
         className
       )}
     >
-      <div
-        className={cn(
-          "flex items-center gap-3 px-3 pt-5 pb-3",
-          collapsed && "justify-center px-2"
-        )}
-      >
+      <div className={cn("flex items-center gap-3 px-3 pt-5 pb-3", collapsed && "justify-center px-2")}>
         <motion.div
           whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.97 }}
@@ -52,17 +46,9 @@ export function Sidebar({
           <ChefHat className="size-5 text-foreground/80" strokeWidth={1.75} />
         </motion.div>
         {!collapsed && (
-          <motion.div
-            initial={{ opacity: 0, x: 6 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="min-w-0"
-          >
-            <p className="truncate text-sm font-semibold tracking-tight">
-              مطبخي
-            </p>
-            <p className="truncate text-xs text-muted-foreground">
-              إدارة المخزون
-            </p>
+          <motion.div initial={{ opacity: 0, x: 6 }} animate={{ opacity: 1, x: 0 }} className="min-w-0">
+            <p className="truncate text-sm font-semibold tracking-tight">{ts("brandName")}</p>
+            <p className="truncate text-xs text-muted-foreground">{ts("brandSubtitle")}</p>
           </motion.div>
         )}
         {!collapsed && (
@@ -71,7 +57,7 @@ export function Sidebar({
             size="icon-sm"
             className="ms-auto hidden rounded-xl lg:flex"
             onClick={toggleSidebar}
-            aria-label="طي القائمة"
+            aria-label={ts("collapse")}
           >
             <PanelRightOpen className="size-4" />
           </Button>
@@ -85,7 +71,7 @@ export function Sidebar({
             size="icon-sm"
             className="rounded-xl"
             onClick={toggleSidebar}
-            aria-label="توسيع القائمة"
+            aria-label={ts("expand")}
           >
             <PanelRightClose className="size-4" />
           </Button>
@@ -94,11 +80,13 @@ export function Sidebar({
 
       <nav className="flex flex-1 flex-col gap-0.5 px-2 py-2">
         {navItems.map((item, index) => {
+          // Compare against pathname without locale prefix
           const active =
             item.href === "/"
-              ? pathname === "/"
-              : pathname.startsWith(item.href)
+              ? pathname === "/" || /^\/[a-z]{2}$/.test(pathname)
+              : pathname.includes(item.href)
           const Icon = item.icon
+          const title = t(item.titleKey)
 
           const link = (
             <Link
@@ -116,28 +104,16 @@ export function Sidebar({
                 <motion.span
                   layoutId="sidebar-active"
                   className="absolute inset-0 rounded-2xl bg-sidebar-accent/90 shadow-sm ring-1 ring-foreground/[0.08]"
-                  transition={{
-                    type: "spring",
-                    stiffness: 380,
-                    damping: 32,
-                  }}
+                  transition={{ type: "spring", stiffness: 380, damping: 32 }}
                 />
               )}
-              <motion.span
-                whileHover={{ scale: 1.08 }}
-                className="relative z-10 flex shrink-0"
-              >
+              <motion.span whileHover={{ scale: 1.08 }} className="relative z-10 flex shrink-0">
                 <Icon
-                  className={cn(
-                    "size-[1.125rem]",
-                    active ? "text-foreground" : "text-muted-foreground"
-                  )}
+                  className={cn("size-[1.125rem]", active ? "text-foreground" : "text-muted-foreground")}
                   strokeWidth={1.75}
                 />
               </motion.span>
-              {!collapsed && (
-                <span className="relative z-10 font-medium">{item.title}</span>
-              )}
+              {!collapsed && <span className="relative z-10 font-medium">{title}</span>}
             </Link>
           )
 
@@ -146,16 +122,12 @@ export function Sidebar({
               key={item.href}
               initial={{ opacity: 0, x: 8 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{
-                delay: index * 0.03,
-                duration: 0.28,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+              transition={{ delay: index * 0.03, duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             >
               {collapsed ? (
                 <Tooltip>
                   <TooltipTrigger asChild>{link}</TooltipTrigger>
-                  <TooltipContent side="left">{item.title}</TooltipContent>
+                  <TooltipContent side="left">{title}</TooltipContent>
                 </Tooltip>
               ) : (
                 link
@@ -167,9 +139,7 @@ export function Sidebar({
 
       {!collapsed && (
         <div className="mt-auto border-t border-sidebar-border/40 px-4 py-4">
-          <p className="text-[0.65rem] leading-relaxed text-muted-foreground">
-            مطبخي · ٢٠٢٦
-          </p>
+          <p className="text-[0.65rem] leading-relaxed text-muted-foreground">{ts("footer")}</p>
         </div>
       )}
     </aside>

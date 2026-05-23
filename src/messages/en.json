@@ -1,0 +1,216 @@
+{
+  "meta": {
+    "appName": "My Kitchen",
+    "appDescription": "Smart kitchen inventory management. Track products, low-stock alerts, and organise your shopping list.",
+    "title": "My Kitchen — Inventory"
+  },
+  "nav": {
+    "dashboard": "Overview",
+    "inventory": "Inventory",
+    "shopping": "Shopping List",
+    "storage": "Storage",
+    "analytics": "Analytics",
+    "settings": "Settings"
+  },
+  "language": {
+    "ar": "العربية",
+    "en": "English",
+    "switchLabel": "Switch language"
+  },
+  "topbar": {
+    "searchPlaceholder": "Search inventory or commands...",
+    "openMenu": "Open menu",
+    "searchButton": "Search",
+    "toggleTheme": "Toggle theme",
+    "notifications": "Notifications",
+    "noNotifications": "No new notifications",
+    "lowStock": "Low stock",
+    "profile": "Profile",
+    "logout": "Sign out",
+    "userName": "Kitchen",
+    "userInitial": "K"
+  },
+  "sidebar": {
+    "brandName": "My Kitchen",
+    "brandSubtitle": "Inventory",
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar",
+    "footer": "My Kitchen · 2026",
+    "navLabel": "Navigation menu"
+  },
+  "dashboard": {
+    "title": "Overview",
+    "subtitle": "A smart summary of your kitchen inventory — updated in real time.",
+    "total": "Total Items",
+    "totalHint": "All registered items",
+    "opened": "Opened Items",
+    "openedHint": "Currently in use",
+    "needsAttention": "Needs Attention",
+    "needsAttentionHint": "Low or almost finished",
+    "categories": "Categories",
+    "categoriesHint": "Active categories"
+  },
+  "alerts": {
+    "title": "Stock Alerts",
+    "subtitle": "Needs your attention",
+    "viewAll": "View all",
+    "empty": "No alerts right now — your stock looks great."
+  },
+  "activity": {
+    "title": "Recent Activity",
+    "subtitle": "Inventory updates",
+    "updated": "Updated",
+    "minutesAgo": "{count}m ago",
+    "hoursAgo": "{count}h ago",
+    "daysAgo": "{count}d ago"
+  },
+  "categoryChart": {
+    "title": "Categories",
+    "subtitle": "Most stocked categories"
+  },
+  "statusChart": {
+    "title": "Stock Status",
+    "subtitle": "Item distribution by status"
+  },
+  "storageOccupancy": {
+    "title": "Storage Occupancy",
+    "subtitle": "By location",
+    "items": "{count} items",
+    "fullPercent": "{pct}% full"
+  },
+  "insights": {
+    "low": {
+      "title": "Stock Alert",
+      "body": "{count} items need restocking soon."
+    },
+    "opened": {
+      "title": "Opened Items",
+      "body": "{count} items are open — check usage dates."
+    },
+    "pasta": {
+      "title": "Pasta Stock",
+      "body": "Good pasta stock — perfect for quick meals."
+    },
+    "ok": {
+      "title": "All Organised",
+      "body": "Your inventory is balanced today. Keep it updated."
+    }
+  },
+  "inventory": {
+    "title": "Inventory",
+    "subtitle": "All your kitchen products — organised, searchable, and instantly updated.",
+    "searchPlaceholder": "Search items...",
+    "addItem": "Add item",
+    "gridView": "Grid view",
+    "listView": "List view",
+    "clearFilters": "Clear",
+    "all": "All",
+    "results": "{count} item",
+    "resultsFiltered": "{count} item matching filters",
+    "statTotal": "Total Items",
+    "statOpened": "Opened Items",
+    "statLow": "Low Stock",
+    "statCategories": "Categories",
+    "quantity": "Quantity",
+    "editItem": "Edit item",
+    "quickAdd": "+1 quick",
+    "delete": "Delete",
+    "edit": "Edit",
+    "decrease": "Decrease",
+    "increase": "Increase"
+  },
+  "form": {
+    "addTitle": "Add Item",
+    "editTitle": "Edit Item",
+    "addDesc": "Add a new item to your kitchen inventory.",
+    "editDesc": "Update the item details in your inventory.",
+    "name": "Item name",
+    "namePlaceholder": "e.g. Rice bag",
+    "quantity": "Quantity",
+    "threshold": "Alert threshold",
+    "unit": "Unit",
+    "category": "Category",
+    "location": "Storage location",
+    "stockStatus": "Stock status",
+    "notes": "Notes (optional)",
+    "notesPlaceholder": "Opened, 1kg...",
+    "cancel": "Cancel",
+    "save": "Save changes",
+    "add": "Add"
+  },
+  "deleteDialog": {
+    "title": "Delete Item",
+    "description": "Are you sure you want to delete {name}? This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Delete"
+  },
+  "toast": {
+    "added": "Item added",
+    "updated": "Item updated",
+    "deleted": "Item deleted"
+  },
+  "status": {
+    "healthy": "Healthy",
+    "opened": "Opened",
+    "low": "Low stock",
+    "almost_finished": "Almost finished"
+  },
+  "sort": {
+    "name-asc": "Name (A–Z)",
+    "name-desc": "Name (Z–A)",
+    "quantity-desc": "Quantity (most)",
+    "quantity-asc": "Quantity (least)",
+    "status": "Stock status",
+    "updated-desc": "Last updated"
+  },
+  "catalog": {
+    "categories": {
+      "canned": "Canned goods",
+      "grains": "Grains",
+      "pasta": "Pasta",
+      "bread": "Bread",
+      "beverages": "Beverages",
+      "spices": "Spices",
+      "oils": "Oils"
+    },
+    "locations": {
+      "kitchen": "Kitchen",
+      "fridge": "Fridge",
+      "freezer": "Freezer",
+      "pantry": "Pantry"
+    },
+    "units": {
+      "kg": "kg",
+      "can": "can",
+      "bag": "bag",
+      "bottle": "bottle",
+      "kg_plural": "kg",
+      "can_plural": "cans",
+      "bag_plural": "bags",
+      "bottle_plural": "bottles"
+    }
+  },
+  "command": {
+    "searchPlaceholder": "Search for an item or command...",
+    "quickActions": "Quick Actions",
+    "navigation": "Navigation",
+    "products": "Products",
+    "noResults": "No results found",
+    "addItem": "Add item",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode"
+  },
+  "pwa": {
+    "installTitle": "Install My Kitchen",
+    "installBody": "Add the app to your home screen for quick offline access",
+    "installNow": "Install now",
+    "iosInstructions": "Tap the Share button in Safari, then choose Add to Home Screen",
+    "dismiss": "Dismiss"
+  },
+  "pages": {
+    "shopping": { "title": "Shopping List", "comingSoon": "Coming soon" },
+    "analytics": { "title": "Analytics", "comingSoon": "Coming soon" },
+    "settings": { "title": "Settings", "comingSoon": "Coming soon" },
+    "storage": { "title": "Storage", "comingSoon": "Coming soon" }
+  }
+}
