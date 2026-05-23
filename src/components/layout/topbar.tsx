@@ -1,0 +1,197 @@
+"use client"
+
+import { useEffect, useMemo, useState } from "react"
+import Link from "next/link"
+import { motion, AnimatePresence } from "framer-motion"
+import {
+  Bell,
+  Command,
+  LogOut,
+  Menu,
+  Moon,
+  Search,
+  Settings,
+  Sun,
+  User,
+} from "lucide-react"
+import { useTheme } from "next-themes"
+
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
+import { useShell } from "@/contexts/shell-context"
+import { getLowStockItems } from "@/lib/inventory/stats"
+import { useInventoryItems } from "@/hooks/use-inventory"
+import { cn } from "@/lib/utils"
+
+type TopbarProps = {
+  onMenuClick?: () => void
+}
+
+export function Topbar({ onMenuClick }: TopbarProps) {
+  const { resolvedTheme, setTheme } = useTheme()
+  const { setCommandOpen } = useShell()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
+  const inventoryItems = useInventoryItems()
+  const alerts = useMemo(
+    () => getLowStockItems(inventoryItems),
+    [inventoryItems]
+  )
+
+  return (
+    <motion.header
+      initial={{ opacity: 0, y: -6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      className="glass-bar sticky top-0 z-40 flex h-14 shrink-0 items-center gap-2 border-b border-border/40 px-3 md:gap-3 md:px-5"
+    >
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        className="rounded-xl md:hidden"
+        onClick={onMenuClick}
+        aria-label="فتح القائمة"
+      >
+        <Menu className="size-5" strokeWidth={1.75} />
+      </Button>
+
+      <button
+        type="button"
+        onClick={() => setCommandOpen(true)}
+        className={cn(
+          "relative hidden min-w-0 flex-1 items-center md:flex md:max-w-sm lg:max-w-md"
+        )}
+      >
+        <Search
+          className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+          strokeWidth={1.75}
+        />
+        <div className="flex h-10 w-full items-center rounded-2xl border border-transparent bg-muted/40 ps-10 pe-20 text-sm text-muted-foreground transition-all duration-200 hover:border-border/40 hover:bg-background/60">
+          ابحث في المخزون أو الأوامر...
+        </div>
+        <kbd className="pointer-events-none absolute end-3 top-1/2 hidden -translate-y-1/2 items-center gap-0.5 rounded-md bg-background/80 px-1.5 py-0.5 text-[10px] text-muted-foreground ring-1 ring-border/60 sm:flex">
+          <Command className="size-2.5" />K
+        </kbd>
+      </button>
+
+      <div className="ms-auto flex items-center gap-0.5">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="rounded-xl md:hidden"
+          onClick={() => setCommandOpen(true)}
+          aria-label="بحث"
+        >
+          <Search className="size-4" strokeWidth={1.75} />
+        </Button>
+
+        <motion.div whileTap={{ scale: 0.92 }}>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="relative rounded-xl"
+            onClick={() =>
+              setTheme(resolvedTheme === "dark" ? "light" : "dark")
+            }
+            aria-label="تبديل الوضع"
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={mounted && resolvedTheme === "dark" ? "sun" : "moon"}
+                initial={{ opacity: 0, rotate: -30, scale: 0.8 }}
+                animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                exit={{ opacity: 0, rotate: 30, scale: 0.8 }}
+                transition={{ duration: 0.2 }}
+                className="flex"
+              >
+                {mounted && resolvedTheme === "dark" ? (
+                  <Sun className="size-4" strokeWidth={1.75} />
+                ) : (
+                  <Moon className="size-4" strokeWidth={1.75} />
+                )}
+              </motion.span>
+            </AnimatePresence>
+          </Button>
+        </motion.div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="relative rounded-xl"
+            >
+              <Bell className="size-4" strokeWidth={1.75} />
+              {alerts.length > 0 && (
+                <span className="absolute top-1 end-1 flex size-2">
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-400 opacity-60" />
+                  <span className="relative inline-flex size-2 rounded-full bg-red-500" />
+                </span>
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-72 rounded-2xl p-2">
+            <p className="px-2 py-1.5 text-xs font-semibold">الإشعارات</p>
+            {alerts.length === 0 ? (
+              <p className="px-2 py-4 text-center text-xs text-muted-foreground">
+                لا إشعارات جديدة
+              </p>
+            ) : (
+              alerts.map((item) => (
+                <DropdownMenuItem key={item.id} asChild>
+                  <Link href="/inventory" className="flex flex-col items-start gap-0.5">
+                    <span className="font-medium">{item.name}</span>
+                    <span className="text-xs text-muted-foreground">
+                      مخزون منخفض
+                    </span>
+                  </Link>
+                </DropdownMenuItem>
+              ))
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-9 gap-2 rounded-xl px-1.5">
+              <Avatar className="size-8 rounded-xl">
+                <AvatarFallback className="rounded-xl bg-muted text-xs font-medium">
+                  م
+                </AvatarFallback>
+              </Avatar>
+              <span className="hidden text-sm font-medium lg:inline">
+                المطبخ
+              </span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-52 rounded-2xl">
+            <DropdownMenuItem>
+              <User className="size-4" />
+              الملف الشخصي
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/settings">
+                <Settings className="size-4" />
+                الإعدادات
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive">
+              <LogOut className="size-4" />
+              تسجيل الخروج
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </motion.header>
+  )
+}
