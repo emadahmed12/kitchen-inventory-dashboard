@@ -117,7 +117,9 @@
     "delete": "Delete",
     "edit": "Edit",
     "decrease": "Decrease",
-    "increase": "Increase"
+    "increase": "Increase",
+    "emptyTitle": "No items found",
+    "emptyDesc": "Try adjusting your filters or add a new item using the add button."
   },
   "form": {
     "addTitle": "Add Item",
@@ -207,10 +209,72 @@
     "iosInstructions": "Tap the Share button in Safari, then choose Add to Home Screen",
     "dismiss": "Dismiss"
   },
+  "shopping": {
+    "title": "Shopping List",
+    "subtitle": "Items that need restocking — automatically synced from your inventory.",
+    "needsRestocking": "Needs restocking",
+    "currentQty": "Current qty",
+    "suggested": "Suggested",
+    "noItems": "All stocked up!",
+    "noItemsDesc": "No items need restocking right now. Low-stock items will appear here automatically.",
+    "checkedOff": "Checked off",
+    "uncheck": "Uncheck",
+    "check": "Check",
+    "uncheckAll": "Uncheck all",
+    "statusLow": "Low stock",
+    "statusAlmost": "Almost finished",
+    "totalNeeded": "{count} items need restocking"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "subtitle": "A deep look at your inventory data.",
+    "overview": "Overview",
+    "totalItems": "Total Items",
+    "healthyItems": "Healthy Items",
+    "attentionItems": "Need Attention",
+    "openedItems": "Opened Items",
+    "totalQty": "Total Quantity",
+    "distribution": "Distribution & Stats",
+    "noData": "Not enough data yet."
+  },
+  "storage": {
+    "title": "Storage",
+    "subtitle": "Manage your storage locations and monitor occupancy.",
+    "occupancy": "Occupancy",
+    "items": "{count} items",
+    "capacity": "Capacity {count}",
+    "empty": "Empty",
+    "noItems": "No items in this location yet.",
+    "allEmpty": "No items are stored yet.",
+    "viewInInventory": "View in Inventory",
+    "locations": "Locations",
+    "mostStored": "Most stored"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Customise your My Kitchen experience.",
+    "language": "Language",
+    "languageDesc": "Choose the app interface language.",
+    "theme": "Appearance",
+    "themeDesc": "Switch between light, dark or follow your device setting.",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "data": "Data",
+    "dataDesc": "Manage your locally stored inventory data.",
+    "resetData": "Reset Data",
+    "resetDataDesc": "Delete all data and restore factory defaults. This cannot be undone.",
+    "resetConfirm": "Confirm reset",
+    "resetCancel": "Cancel",
+    "resetSuccess": "Inventory data has been reset.",
+    "about": "About",
+    "version": "Version 1.0",
+    "builtWith": "Built with Next.js 16 · React 19 · Zustand"
+  },
   "pages": {
-    "shopping": { "title": "Shopping List", "comingSoon": "Coming soon" },
-    "analytics": { "title": "Analytics", "comingSoon": "Coming soon" },
-    "settings": { "title": "Settings", "comingSoon": "Coming soon" },
-    "storage": { "title": "Storage", "comingSoon": "Coming soon" }
+    "shopping": { "title": "Shopping List" },
+    "analytics": { "title": "Analytics" },
+    "settings": { "title": "Settings" },
+    "storage": { "title": "Storage" }
   }
 }

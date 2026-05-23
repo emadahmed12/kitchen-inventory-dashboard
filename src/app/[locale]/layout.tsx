@@ -123,7 +123,7 @@ export default async function LocaleLayout({
       </head>
       <body className="min-h-dvh font-sans">
         <NextIntlClientProvider messages={messages}>
-          <AppProviders>
+          <AppProviders dir={isRTL ? "rtl" : "ltr"}>
             <AppShell>{children}</AppShell>
             <PWAInstallPrompt />
           </AppProviders>

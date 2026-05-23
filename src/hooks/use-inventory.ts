@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState, useEffect } from "react"
 import { useShallow } from "zustand/react/shallow"
 
 import { filterAndSortItems, hasActiveFilters } from "@/lib/inventory/filters"
@@ -101,6 +101,35 @@ export function useInventoryItems() {
   return useInventoryStore(selectAllItems)
 }
 
+/**
+ * Reliable hydration check that survives production builds.
+ *
+ * Strategy (two layers):
+ *  1. Primary  — subscribe to `_hasHydrated` in the Zustand store (set via
+ *               `onRehydrateStorage`).
+ *  2. Fallback — subscribe to Zustand's own persist API (`hasHydrated` /
+ *               `onFinishHydration`) in a `useEffect`.  This fires even when
+ *               the `onRehydrateStorage` callback is dropped by minifiers or
+ *               when the store is accessed before the callback runs.
+ *
+ * Returns `true` the moment either layer fires — whichever comes first.
+ */
 export function useInventoryHydrated() {
-  return useInventoryStore(selectHydrated)
+  const storeHydrated = useInventoryStore(selectHydrated)
+
+  const [persistReady, setPersistReady] = useState(false)
+
+  useEffect(() => {
+    // Fast-path: persist already completed before this effect ran
+    if (useInventoryStore.persist.hasHydrated()) {
+      setPersistReady(true)
+      return
+    }
+    // Subscribe for future completion and return the unsubscribe function
+    return useInventoryStore.persist.onFinishHydration(() => {
+      setPersistReady(true)
+    })
+  }, [])
+
+  return storeHydrated || persistReady
 }

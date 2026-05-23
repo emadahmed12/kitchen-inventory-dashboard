@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion"
 import { PackageOpen } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 import { InventoryCard } from "@/components/inventory/inventory-card"
 import { InventoryListRow } from "@/components/inventory/inventory-list-row"
@@ -26,6 +27,8 @@ export function InventoryView({
   onDelete,
   onQuantityChange,
 }: InventoryViewProps) {
+  const t = useTranslations("inventory")
+
   if (!hydrated) {
     return <InventorySkeleton view={view} />
   }
@@ -40,9 +43,9 @@ export function InventoryView({
         <div className="mb-4 flex size-16 items-center justify-center rounded-2xl bg-muted/40 ring-1 ring-foreground/[0.06]">
           <PackageOpen className="size-7 text-muted-foreground" strokeWidth={1.25} />
         </div>
-        <p className="text-base font-semibold">لا توجد منتجات</p>
+        <p className="text-base font-semibold">{t("emptyTitle")}</p>
         <p className="mt-2 max-w-xs text-sm text-muted-foreground">
-          جرّب تغيير الفلاتر أو أضف منتجاً جديداً عبر زر الإضافة.
+          {t("emptyDesc")}
         </p>
       </motion.div>
     )

@@ -117,7 +117,9 @@
     "delete": "حذف",
     "edit": "تعديل",
     "decrease": "تقليل",
-    "increase": "زيادة"
+    "increase": "زيادة",
+    "emptyTitle": "لا توجد منتجات",
+    "emptyDesc": "جرّب تغيير الفلاتر أو أضف منتجاً جديداً عبر زر الإضافة."
   },
   "form": {
     "addTitle": "إضافة منتج",
@@ -207,10 +209,72 @@
     "iosInstructions": "اضغط على زر المشاركة في سفاري، ثم اختر إضافة للشاشة الرئيسية",
     "dismiss": "إغلاق"
   },
+  "shopping": {
+    "title": "قائمة التسوق",
+    "subtitle": "المنتجات التي تحتاج إعادة تموين — تُحدَّث تلقائياً من المخزون.",
+    "needsRestocking": "يحتاج تموين",
+    "currentQty": "الكمية الحالية",
+    "suggested": "مقترح",
+    "noItems": "مخزونك ممتاز!",
+    "noItemsDesc": "لا توجد منتجات تحتاج شراء حالياً. عندما ينخفض مخزون أي منتج سيظهر هنا.",
+    "checkedOff": "تم التأشير",
+    "uncheck": "إلغاء التأشير",
+    "check": "تأشير",
+    "uncheckAll": "إلغاء الكل",
+    "statusLow": "مخزون منخفض",
+    "statusAlmost": "قارب على الانتهاء",
+    "totalNeeded": "{count} منتج يحتاج شراء"
+  },
+  "analytics": {
+    "title": "التحليلات",
+    "subtitle": "نظرة عميقة على بيانات مخزونك.",
+    "overview": "ملخص عام",
+    "totalItems": "إجمالي المنتجات",
+    "healthyItems": "منتجات سليمة",
+    "attentionItems": "تحتاج انتباه",
+    "openedItems": "منتجات مفتوحة",
+    "totalQty": "إجمالي الكميات",
+    "distribution": "التوزيع والإحصاءات",
+    "noData": "لا توجد بيانات كافية بعد."
+  },
+  "storage": {
+    "title": "أماكن التخزين",
+    "subtitle": "إدارة مواقع تخزين منتجاتك ومراقبة الإشغال.",
+    "occupancy": "الإشغال",
+    "items": "{count} منتج",
+    "capacity": "سعة {count}",
+    "empty": "فارغ",
+    "noItems": "لا توجد منتجات في هذا الموقع بعد.",
+    "allEmpty": "لا توجد منتجات مخزنة حالياً.",
+    "viewInInventory": "عرض في المخزون",
+    "locations": "المواقع",
+    "mostStored": "الأكثر تخزيناً"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "subtitle": "تخصيص تجربتك في مطبخي.",
+    "language": "اللغة",
+    "languageDesc": "اختر لغة واجهة التطبيق.",
+    "theme": "المظهر",
+    "themeDesc": "اختر بين الوضع الفاتح والداكن أو اتبع إعداد الجهاز.",
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "تلقائي",
+    "data": "البيانات",
+    "dataDesc": "إدارة بيانات المخزون المحفوظة محلياً.",
+    "resetData": "إعادة تعيين البيانات",
+    "resetDataDesc": "حذف جميع البيانات واستبدالها بالبيانات الافتراضية. لا يمكن التراجع.",
+    "resetConfirm": "تأكيد إعادة التعيين",
+    "resetCancel": "إلغاء",
+    "resetSuccess": "تمت إعادة تعيين بيانات المخزون.",
+    "about": "عن التطبيق",
+    "version": "الإصدار 1.0",
+    "builtWith": "مبني بـ Next.js 16 · React 19 · Zustand"
+  },
   "pages": {
-    "shopping": { "title": "قائمة التسوق", "comingSoon": "قريباً" },
-    "analytics": { "title": "التحليلات", "comingSoon": "قريباً" },
-    "settings": { "title": "الإعدادات", "comingSoon": "قريباً" },
-    "storage": { "title": "أماكن التخزين", "comingSoon": "قريباً" }
+    "shopping": { "title": "قائمة التسوق" },
+    "analytics": { "title": "التحليلات" },
+    "settings": { "title": "الإعدادات" },
+    "storage": { "title": "أماكن التخزين" }
   }
 }

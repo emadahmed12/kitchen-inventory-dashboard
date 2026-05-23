@@ -5,14 +5,19 @@ import { Toaster } from "sonner"
 import { ShellProvider } from "@/contexts/shell-context"
 import { ThemeProvider } from "@/components/providers/theme-provider"
 
-export function AppProviders({ children }: { children: React.ReactNode }) {
+type AppProvidersProps = {
+  children: React.ReactNode
+  dir?: "ltr" | "rtl"
+}
+
+export function AppProviders({ children, dir = "rtl" }: AppProvidersProps) {
   return (
     <ThemeProvider>
       <ShellProvider>
         {children}
         <Toaster
           position="top-center"
-          dir="rtl"
+          dir={dir}
           toastOptions={{
             classNames: {
               toast:

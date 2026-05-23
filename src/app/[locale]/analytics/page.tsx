@@ -1,12 +1,5 @@
-import { getTranslations } from "next-intl/server"
+import { AnalyticsPage } from "@/components/analytics/analytics-page"
 
-export default async function AnalyticsPage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params
-  const t = await getTranslations({ locale, namespace: "pages.analytics" })
-  return (
-    <div className="mx-auto max-w-6xl space-y-1">
-      <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">{t("title")}</h1>
-      <p className="text-sm text-muted-foreground">{t("comingSoon")}</p>
-    </div>
-  )
+export default function Page() {
+  return <AnalyticsPage />
 }

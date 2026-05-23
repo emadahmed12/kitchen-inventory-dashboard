@@ -131,12 +131,15 @@ export const useInventoryStore = create<InventoryState>()(
         items: state.items,
         viewMode: state.viewMode,
       }),
-      onRehydrateStorage: () => () => {
-        const current = useInventoryStore.getState()
-        if (current.items.length === 0) {
+      onRehydrateStorage: () => (hydratedState) => {
+        // hydratedState is undefined if storage was empty or a parse error occurred.
+        // In either case, ensure seed data + mark hydration complete.
+        if (!hydratedState || hydratedState.items.length === 0) {
           useInventoryStore.setState({ items: getInitialInventoryItems() })
         }
-        useInventoryStore.getState().setHasHydrated(true)
+        // Use setState directly — avoids the circular-reference race that can
+        // silently drop the callback in minified production bundles.
+        useInventoryStore.setState({ _hasHydrated: true })
       },
     }
   )
