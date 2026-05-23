@@ -4,17 +4,13 @@ import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
 
 import { SEED_INVENTORY } from "@/data/seed-inventory"
-import {
-  filterAndSortItems,
-  hasActiveFilters,
-} from "@/lib/inventory/filters"
+import { hasActiveFilters } from "@/lib/inventory/filters"
 import { STORE_STORAGE_KEY } from "@/lib/inventory/constants"
 import { getInitialInventoryItems } from "@/lib/inventory/migrate"
 import {
   createInventoryItem,
   mergeInventoryItem,
 } from "@/lib/inventory/normalize"
-import { computeInventoryStats } from "@/lib/inventory/stats"
 import { statusAfterQuantityChange } from "@/lib/inventory/status"
 import type { CategoryId } from "@/types/catalog"
 import type {
@@ -61,7 +57,7 @@ type InventoryState = {
 
 export const useInventoryStore = create<InventoryState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       items: SEED_INVENTORY,
       _hasHydrated: false,
       filters: DEFAULT_FILTERS,
@@ -146,28 +142,37 @@ export const useInventoryStore = create<InventoryState>()(
   )
 )
 
-/** Selectors — use in hooks or components */
+/**
+ * Stable selectors — each returns a primitive or the exact state reference.
+ * React 19 / useSyncExternalStore requires getServerSnapshot to return the
+ * same reference across calls; these never construct new objects/arrays so
+ * they satisfy that contract and never trigger spurious re-renders.
+ *
+ * Do NOT add selectors here that call filter/map/sort or construct new
+ * objects. Put those computations in useMemo inside the consuming hook.
+ */
 
-export function selectAllItems(state: InventoryState) {
-  return state.items
+/** The raw items array — same reference until an item is added/edited/deleted */
+export function selectAllItems(s: InventoryState) {
+  return s.items
 }
 
-export function selectFilteredItems(state: InventoryState) {
-  return filterAndSortItems(state.items, state.filters)
+/** The filters object — same reference until a filter value changes */
+export function selectFilters(s: InventoryState) {
+  return s.filters
 }
 
-export function selectStats(state: InventoryState) {
-  return computeInventoryStats(state.items)
+/** Boolean primitive — always stable */
+export function selectHydrated(s: InventoryState) {
+  return s._hasHydrated
 }
 
-export function selectHydrated(state: InventoryState) {
-  return state._hasHydrated
+/** Boolean primitive — always stable */
+export function selectHasActiveFilters(s: InventoryState) {
+  return hasActiveFilters(s.filters)
 }
 
-export function selectFilters(state: InventoryState) {
-  return state.filters
-}
-
-export function selectHasActiveFilters(state: InventoryState) {
-  return hasActiveFilters(state.filters)
+/** String primitive — always stable */
+export function selectViewMode(s: InventoryState) {
+  return s.viewMode
 }

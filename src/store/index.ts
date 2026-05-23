@@ -1,9 +1,8 @@
 export {
   useInventoryStore,
   selectAllItems,
-  selectFilteredItems,
-  selectStats,
-  selectHydrated,
   selectFilters,
+  selectHydrated,
   selectHasActiveFilters,
+  selectViewMode,
 } from "@/store/inventory-store"
