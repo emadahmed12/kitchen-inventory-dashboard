@@ -138,7 +138,10 @@
     "notesPlaceholder": "Opened, 1kg...",
     "cancel": "Cancel",
     "save": "Save changes",
-    "add": "Add"
+    "add": "Add",
+    "image": "Item photo",
+    "imageDrop": "PNG, JPG or WEBP — max 5 MB",
+    "uploading": "Uploading..."
   },
   "deleteDialog": {
     "title": "Delete Item",
@@ -270,6 +273,31 @@
     "about": "About",
     "version": "Version 1.0",
     "builtWith": "Built with Next.js 16 · React 19 · Zustand"
+  },
+  "auth": {
+    "title": "Welcome to My Kitchen",
+    "subtitle": "Sign in to manage your kitchen inventory from anywhere.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "your@email.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "googleSignIn": "Continue with Google",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "switchToSignUp": "Create new account",
+    "switchToSignIn": "Sign in",
+    "loading": "Signing in...",
+    "signOut": "Sign out",
+    "devModeTitle": "Dev Mode",
+    "devModeDesc": "Supabase is not configured. The app runs locally without authentication.",
+    "syncError": "Failed to sync with server",
+    "syncSuccess": "Synced",
+    "errorInvalid": "Invalid email or password. Please try again.",
+    "errorGeneral": "Something went wrong. Please try again.",
+    "profile": "Profile",
+    "settings": "Settings"
   },
   "pages": {
     "shopping": { "title": "Shopping List" },

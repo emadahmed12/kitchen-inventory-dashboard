@@ -30,6 +30,8 @@ export type InventoryItem = {
   notes?: string
   tags: string[]
   metadata: InventoryItemMetadata
+  /** Public URL of the item image stored in Supabase Storage */
+  imageUrl?: string
   createdAt: string
   updatedAt: string
 }
@@ -46,6 +48,7 @@ export type InventoryItemInput = {
   notes?: string
   tags?: string[]
   metadata?: InventoryItemMetadata
+  imageUrl?: string
 }
 
 export type InventoryStats = {

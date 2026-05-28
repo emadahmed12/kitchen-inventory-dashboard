@@ -1,7 +1,8 @@
 "use client"
 
-import { useMemo, useState, useEffect } from "react"
+import { useCallback, useMemo, useState, useEffect } from "react"
 import { useShallow } from "zustand/react/shallow"
+import { toast } from "sonner"
 
 import { filterAndSortItems, hasActiveFilters } from "@/lib/inventory/filters"
 import { computeInventoryStats } from "@/lib/inventory/stats"
@@ -12,38 +13,34 @@ import {
   selectViewMode,
   useInventoryStore,
 } from "@/store/inventory-store"
+import { SUPABASE_ENABLED } from "@/lib/supabase/config"
+import {
+  serverAddItem,
+  serverUpdateItem,
+  serverUpdateQuantity,
+  serverDeleteItem,
+} from "@/lib/supabase/actions"
+import type { InventoryItemInput } from "@/types/inventory"
 
 /**
  * Primary inventory hook.
  *
- * Architecture note — why selectors are split from derived values:
+ * All mutation actions use **optimistic updates**:
+ *  1. Zustand store is updated immediately → UI reflects change at once
+ *  2. Server Action syncs with Supabase in the background
+ *  3. On DB success → the optimistic item is swapped for the DB-confirmed one
+ *  4. On DB failure → the optimistic change is rolled back and a toast is shown
  *
- * React 19 uses useSyncExternalStore internally (via Zustand 5). That API
- * requires getServerSnapshot to return a cached/stable reference on every
- * call. Selectors that compute new arrays or objects (filter, sort, map)
- * violate this contract: each call returns a new reference, React detects
- * the mismatch, and triggers an infinite render loop.
- *
- * Fix: selectors passed to useInventoryStore only return raw state slices
- * (items, filters, booleans). Derived values are computed in useMemo, which
- * is stable by design — it only recomputes when its declared deps change.
+ * When SUPABASE_ENABLED is false the actions behave exactly as before
+ * (pure Zustand / localStorage).
  */
 export function useInventory() {
-  // --- Raw state subscriptions (stable references) ---
-
-  // items: same array reference until an item is added/updated/deleted
   const items = useInventoryStore(selectAllItems)
-
-  // filters: same object reference until a filter value changes
   const filters = useInventoryStore(selectFilters)
-
   const hydrated = useInventoryStore(selectHydrated)
   const viewMode = useInventoryStore(selectViewMode)
 
-  // Actions — Zustand creates these once at store initialisation and never
-  // replaces them, so each function reference is permanently stable.
-  // useShallow groups them into one subscription to avoid 10 separate ones.
-  const actions = useInventoryStore(
+  const storeActions = useInventoryStore(
     useShallow((s) => ({
       setSearch: s.setSearch,
       setCategory: s.setCategory,
@@ -51,81 +48,143 @@ export function useInventory() {
       setSort: s.setSort,
       setViewMode: s.setViewMode,
       clearFilters: s.clearFilters,
-      addItem: s.addItem,
-      updateItem: s.updateItem,
-      deleteItem: s.deleteItem,
-      updateQuantity: s.updateQuantity,
+      // raw store mutations (optimistic)
+      _addItem: s.addItem,
+      _updateItem: s.updateItem,
+      _deleteItem: s.deleteItem,
+      _updateQuantity: s.updateQuantity,
+      _replaceItem: s.replaceItem,
     }))
   )
 
-  // --- Derived values (computed once per dependency change) ---
+  // ── synced mutations ──────────────────────────────────────────────────────
 
-  // filteredItems: recomputed only when items array or filters object change
+  const addItem = useCallback(
+    (input: InventoryItemInput) => {
+      const optimistic = storeActions._addItem(input)
+
+      if (SUPABASE_ENABLED) {
+        serverAddItem(input)
+          .then((dbItem) => storeActions._replaceItem(optimistic.id, dbItem))
+          .catch(() => {
+            storeActions._deleteItem(optimistic.id)
+            toast.error("Sync failed — item was not saved to the cloud.")
+          })
+      }
+
+      return optimistic
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [storeActions._addItem, storeActions._deleteItem, storeActions._replaceItem]
+  )
+
+  const updateItem = useCallback(
+    (id: string, input: InventoryItemInput) => {
+      // Store the previous state for rollback
+      const previous = useInventoryStore.getState().items.find((i) => i.id === id)
+      storeActions._updateItem(id, input)
+
+      if (SUPABASE_ENABLED) {
+        serverUpdateItem(id, input)
+          .then((dbItem) => storeActions._replaceItem(id, dbItem))
+          .catch(() => {
+            if (previous) storeActions._replaceItem(id, previous)
+            toast.error("Sync failed — changes were not saved to the cloud.")
+          })
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [storeActions._updateItem, storeActions._replaceItem]
+  )
+
+  const deleteItem = useCallback(
+    (id: string) => {
+      const previous = useInventoryStore.getState().items.find((i) => i.id === id)
+      storeActions._deleteItem(id)
+
+      if (SUPABASE_ENABLED && previous) {
+        serverDeleteItem(id, previous.name).catch(() => {
+          // Re-add the item on failure
+          storeActions._replaceItem(id, previous) // won't match so it's a no-op
+          useInventoryStore.setState((s) => ({
+            items: [...s.items, previous],
+          }))
+          toast.error("Sync failed — item was not deleted from the cloud.")
+        })
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [storeActions._deleteItem, storeActions._replaceItem]
+  )
+
+  const updateQuantity = useCallback(
+    (id: string, quantity: number) => {
+      const previous = useInventoryStore.getState().items.find((i) => i.id === id)
+      storeActions._updateQuantity(id, quantity)
+
+      if (SUPABASE_ENABLED && previous) {
+        serverUpdateQuantity(id, quantity, previous.quantity)
+          .then((dbItem) => storeActions._replaceItem(id, dbItem))
+          .catch(() => {
+            if (previous) storeActions._replaceItem(id, previous)
+          })
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [storeActions._updateQuantity, storeActions._replaceItem]
+  )
+
+  // ── derived values ────────────────────────────────────────────────────────
   const filteredItems = useMemo(
     () => filterAndSortItems(items, filters),
     [items, filters]
   )
-
-  // stats: recomputed only when items array changes
   const stats = useMemo(() => computeInventoryStats(items), [items])
-
-  // hasActiveFilters: recomputed only when filters object changes
   const activeFilters = useMemo(() => hasActiveFilters(filters), [filters])
 
   return {
-    // Raw
     items,
     hydrated,
     filters,
     view: viewMode,
-    // Convenience aliases so consumers don't need to destructure filters
     search: filters.search,
     category: filters.category,
     status: filters.status,
     sort: filters.sort,
-    // Derived
     filteredItems,
     stats,
     hasActiveFilters: activeFilters,
-    // Actions
-    ...actions,
+    // filter actions
+    setSearch: storeActions.setSearch,
+    setCategory: storeActions.setCategory,
+    setStatus: storeActions.setStatus,
+    setSort: storeActions.setSort,
+    setViewMode: storeActions.setViewMode,
+    clearFilters: storeActions.clearFilters,
+    // synced mutations
+    addItem,
+    updateItem,
+    deleteItem,
+    updateQuantity,
   }
 }
 
-/**
- * Lightweight read-only hook for components that only need the raw item list
- * (dashboard, command palette, topbar alerts).
- * Returns the same array reference until items mutate — safe for useMemo deps.
- */
 export function useInventoryItems() {
   return useInventoryStore(selectAllItems)
 }
 
 /**
- * Reliable hydration check that survives production builds.
- *
- * Strategy (two layers):
- *  1. Primary  — subscribe to `_hasHydrated` in the Zustand store (set via
- *               `onRehydrateStorage`).
- *  2. Fallback — subscribe to Zustand's own persist API (`hasHydrated` /
- *               `onFinishHydration`) in a `useEffect`.  This fires even when
- *               the `onRehydrateStorage` callback is dropped by minifiers or
- *               when the store is accessed before the callback runs.
- *
- * Returns `true` the moment either layer fires — whichever comes first.
+ * Reliable hydration check (two-layer fallback).
  */
 export function useInventoryHydrated() {
   const storeHydrated = useInventoryStore(selectHydrated)
-
   const [persistReady, setPersistReady] = useState(false)
 
   useEffect(() => {
-    // Fast-path: persist already completed before this effect ran
     if (useInventoryStore.persist.hasHydrated()) {
       setPersistReady(true)
       return
     }
-    // Subscribe for future completion and return the unsubscribe function
     return useInventoryStore.persist.onFinishHydration(() => {
       setPersistReady(true)
     })

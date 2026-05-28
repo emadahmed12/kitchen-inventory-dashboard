@@ -3,23 +3,22 @@
 import { useEffect, useMemo, useState } from "react"
 import { useTranslations } from "next-intl"
 import { motion, AnimatePresence } from "framer-motion"
-import { Bell, Command, LogOut, Menu, Moon, Search, Settings, Sun, User } from "lucide-react"
+import { Bell, Command, Menu, Moon, Search, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { Link } from "@/i18n/navigation"
 import { LanguageSwitcher } from "@/components/layout/language-switcher"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { UserMenu } from "@/components/auth/user-menu"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useShell } from "@/contexts/shell-context"
 import { getLowStockItems } from "@/lib/inventory/stats"
 import { useInventoryItems } from "@/hooks/use-inventory"
+import { useAuthInit } from "@/hooks/use-auth"
 import { cn } from "@/lib/utils"
 
 type TopbarProps = { onMenuClick?: () => void }
@@ -30,6 +29,9 @@ export function Topbar({ onMenuClick }: TopbarProps) {
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
   const t = useTranslations("topbar")
+
+  // Initialise auth listener (safe to call here — idempotent)
+  useAuthInit()
 
   const inventoryItems = useInventoryItems()
   const alerts = useMemo(() => getLowStockItems(inventoryItems), [inventoryItems])
@@ -69,6 +71,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
       </button>
 
       <div className="ms-auto flex items-center gap-0.5">
+        {/* Mobile search */}
         <Button
           variant="ghost"
           size="icon-sm"
@@ -112,17 +115,6 @@ export function Topbar({ onMenuClick }: TopbarProps) {
 
         {/* Notifications */}
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon-sm" className="relative rounded-xl">
-              <Bell className="size-4" strokeWidth={1.75} />
-              {alerts.length > 0 && (
-                <span className="absolute top-1 end-1 flex size-2">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-400 opacity-60" />
-                  <span className="relative inline-flex size-2 rounded-full bg-red-500" />
-                </span>
-              )}
-            </Button>
-          </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-72 rounded-2xl p-2">
             <p className="px-2 py-1.5 text-xs font-semibold">{t("notifications")}</p>
             {alerts.length === 0 ? (
@@ -140,38 +132,19 @@ export function Topbar({ onMenuClick }: TopbarProps) {
               ))
             )}
           </DropdownMenuContent>
+          <Button variant="ghost" size="icon-sm" className="relative rounded-xl" aria-label={t("notifications")}>
+            <Bell className="size-4" strokeWidth={1.75} />
+            {alerts.length > 0 && (
+              <span className="absolute top-1 end-1 flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-400 opacity-60" />
+                <span className="relative inline-flex size-2 rounded-full bg-red-500" />
+              </span>
+            )}
+          </Button>
         </DropdownMenu>
 
-        {/* User menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-9 gap-2 rounded-xl px-1.5">
-              <Avatar className="size-8 rounded-xl">
-                <AvatarFallback className="rounded-xl bg-muted text-xs font-medium">
-                  {t("userInitial")}
-                </AvatarFallback>
-              </Avatar>
-              <span className="hidden text-sm font-medium lg:inline">{t("userName")}</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-52 rounded-2xl">
-            <DropdownMenuItem>
-              <User className="size-4" />
-              {t("profile")}
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/settings">
-                <Settings className="size-4" />
-                <span>{t("notifications")}</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">
-              <LogOut className="size-4" />
-              {t("logout")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* User menu — auth-aware */}
+        <UserMenu />
       </div>
     </motion.header>
   )

@@ -138,7 +138,10 @@
     "notesPlaceholder": "مفتوح، كيلو، ...",
     "cancel": "إلغاء",
     "save": "حفظ التعديلات",
-    "add": "إضافة"
+    "add": "إضافة",
+    "image": "صورة المنتج",
+    "imageDrop": "PNG أو JPG أو WEBP، بحد أقصى 5 ميجا",
+    "uploading": "جارٍ الرفع..."
   },
   "deleteDialog": {
     "title": "حذف المنتج",
@@ -270,6 +273,31 @@
     "about": "عن التطبيق",
     "version": "الإصدار 1.0",
     "builtWith": "مبني بـ Next.js 16 · React 19 · Zustand"
+  },
+  "auth": {
+    "title": "مرحباً بك في مطبخي",
+    "subtitle": "سجّل دخولك لإدارة مخزون مطبخك من أي مكان.",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "your@email.com",
+    "passwordLabel": "كلمة المرور",
+    "passwordPlaceholder": "••••••••",
+    "signIn": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "googleSignIn": "المتابعة مع Google",
+    "noAccount": "ليس لديك حساب؟",
+    "hasAccount": "لديك حساب بالفعل؟",
+    "switchToSignUp": "إنشاء حساب جديد",
+    "switchToSignIn": "تسجيل الدخول",
+    "loading": "جارٍ تسجيل الدخول...",
+    "signOut": "تسجيل الخروج",
+    "devModeTitle": "وضع التطوير",
+    "devModeDesc": "Supabase غير مُهيَّأ. التطبيق يعمل محلياً بدون مصادقة.",
+    "syncError": "فشل المزامنة مع الخادم",
+    "syncSuccess": "تمت المزامنة",
+    "errorInvalid": "بيانات الدخول غير صحيحة. تحقق من البريد وكلمة المرور.",
+    "errorGeneral": "حدث خطأ. حاول مرة أخرى.",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات"
   },
   "pages": {
     "shopping": { "title": "قائمة التسوق" },

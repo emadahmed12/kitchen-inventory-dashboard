@@ -3,9 +3,8 @@ import { Cairo, Inter } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages, getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
-import { AppShell } from "@/components/layout/app-shell"
-import { PWAInstallPrompt } from "@/components/pwa/install-prompt"
 import { PWARegister } from "@/components/pwa/pwa-register"
+import { PWAInstallPrompt } from "@/components/pwa/install-prompt"
 import { AppProviders } from "@/components/providers/app-providers"
 import { routing } from "@/i18n/routing"
 import type { Locale } from "@/i18n/routing"
@@ -105,9 +104,7 @@ export default async function LocaleLayout({
     notFound()
   }
 
-  // Load all messages for this locale and pass to the client provider
   const messages = await getMessages()
-
   const isRTL = locale === "ar"
   const font = isRTL ? cairo : inter
 
@@ -123,8 +120,12 @@ export default async function LocaleLayout({
       </head>
       <body className="min-h-dvh font-sans">
         <NextIntlClientProvider messages={messages}>
+          {/*
+            AppShell is mounted in [locale]/(app)/layout.tsx so auth pages
+            (/auth/*) render without the sidebar/topbar shell.
+          */}
           <AppProviders dir={isRTL ? "rtl" : "ltr"}>
-            <AppShell>{children}</AppShell>
+            {children}
             <PWAInstallPrompt />
           </AppProviders>
         </NextIntlClientProvider>

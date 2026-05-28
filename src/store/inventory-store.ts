@@ -47,12 +47,22 @@ type InventoryState = {
   setViewMode: (view: ViewMode) => void
   clearFilters: () => void
 
+  // Local-only mutations (optimistic cache)
   addItem: (input: InventoryItemInput) => InventoryItem
   updateItem: (id: string, input: InventoryItemInput) => void
   deleteItem: (id: string) => void
   updateQuantity: (id: string, quantity: number) => void
-
   resetToSeed: () => void
+
+  // Supabase sync helpers
+  /** Replace the entire items array (used after fetching from Supabase). */
+  setItems: (items: InventoryItem[]) => void
+  /** Swap an optimistic item with the DB-confirmed version (resolves temp ID). */
+  replaceItem: (id: string, item: InventoryItem) => void
+  /** Add a single item without creating a new one (used by realtime inserts). */
+  addItemToStore: (item: InventoryItem) => void
+  /** Remove a single item by ID (used by realtime deletes). */
+  deleteItemFromStore: (id: string) => void
 }
 
 export const useInventoryStore = create<InventoryState>()(
@@ -123,6 +133,35 @@ export const useInventoryStore = create<InventoryState>()(
         set({ items: SEED_INVENTORY, filters: DEFAULT_FILTERS })
         notifyInventoryChange()
       },
+
+      // ── Supabase sync helpers ────────────────────────────────────────────
+      setItems: (items) => {
+        set({ items })
+        notifyInventoryChange()
+      },
+
+      replaceItem: (id, newItem) => {
+        set((s) => ({
+          items: s.items.some((i) => i.id === id)
+            ? s.items.map((i) => (i.id === id ? newItem : i))
+            : s.items, // item already gone (delete race) — no-op
+        }))
+        notifyInventoryChange()
+      },
+
+      addItemToStore: (item) => {
+        set((s) => {
+          // Skip if item is already in the store (optimistic duplicate)
+          if (s.items.some((i) => i.id === item.id)) return s
+          return { items: [item, ...s.items] }
+        })
+        notifyInventoryChange()
+      },
+
+      deleteItemFromStore: (id) => {
+        set((s) => ({ items: s.items.filter((i) => i.id !== id) }))
+        notifyInventoryChange()
+      },
     }),
     {
       name: STORE_STORAGE_KEY,
@@ -132,13 +171,9 @@ export const useInventoryStore = create<InventoryState>()(
         viewMode: state.viewMode,
       }),
       onRehydrateStorage: () => (hydratedState) => {
-        // hydratedState is undefined if storage was empty or a parse error occurred.
-        // In either case, ensure seed data + mark hydration complete.
         if (!hydratedState || hydratedState.items.length === 0) {
           useInventoryStore.setState({ items: getInitialInventoryItems() })
         }
-        // Use setState directly — avoids the circular-reference race that can
-        // silently drop the callback in minified production bundles.
         useInventoryStore.setState({ _hasHydrated: true })
       },
     }
@@ -147,35 +182,9 @@ export const useInventoryStore = create<InventoryState>()(
 
 /**
  * Stable selectors — each returns a primitive or the exact state reference.
- * React 19 / useSyncExternalStore requires getServerSnapshot to return the
- * same reference across calls; these never construct new objects/arrays so
- * they satisfy that contract and never trigger spurious re-renders.
- *
- * Do NOT add selectors here that call filter/map/sort or construct new
- * objects. Put those computations in useMemo inside the consuming hook.
  */
-
-/** The raw items array — same reference until an item is added/edited/deleted */
-export function selectAllItems(s: InventoryState) {
-  return s.items
-}
-
-/** The filters object — same reference until a filter value changes */
-export function selectFilters(s: InventoryState) {
-  return s.filters
-}
-
-/** Boolean primitive — always stable */
-export function selectHydrated(s: InventoryState) {
-  return s._hasHydrated
-}
-
-/** Boolean primitive — always stable */
-export function selectHasActiveFilters(s: InventoryState) {
-  return hasActiveFilters(s.filters)
-}
-
-/** String primitive — always stable */
-export function selectViewMode(s: InventoryState) {
-  return s.viewMode
-}
+export function selectAllItems(s: InventoryState) { return s.items }
+export function selectFilters(s: InventoryState) { return s.filters }
+export function selectHydrated(s: InventoryState) { return s._hasHydrated }
+export function selectHasActiveFilters(s: InventoryState) { return hasActiveFilters(s.filters) }
+export function selectViewMode(s: InventoryState) { return s.viewMode }
