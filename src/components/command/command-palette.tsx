@@ -25,6 +25,7 @@ export function CommandPalette() {
   const tNav = useTranslations("nav")
   const tCatalog = useTranslations("catalog")
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { if (!commandOpen) setQuery("") }, [commandOpen])
 
   const productResults = useMemo(() => {

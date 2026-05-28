@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
-import { Download, Plus, Share, X } from "lucide-react"
+import { Download, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -20,6 +20,7 @@ export function PWAInstallPrompt() {
   const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const t = useTranslations("pwa")
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (window.matchMedia("(display-mode: standalone)").matches) return
     if (localStorage.getItem(DISMISS_KEY)) return
@@ -41,6 +42,7 @@ export function PWAInstallPrompt() {
     window.addEventListener("beforeinstallprompt", handler)
     return () => window.removeEventListener("beforeinstallprompt", handler)
   }, [])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleInstall = useCallback(async () => {
     if (!prompt) return

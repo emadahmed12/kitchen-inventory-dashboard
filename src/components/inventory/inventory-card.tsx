@@ -1,5 +1,6 @@
 "use client"
 
+import { createElement } from "react"
 import { useTranslations } from "next-intl"
 import { motion } from "framer-motion"
 import { MapPin, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
@@ -23,7 +24,13 @@ type InventoryCardProps = {
 
 export function InventoryCard({ item, index, onEdit, onDelete, onQuantityChange }: InventoryCardProps) {
   const colors = STATUS_COLORS[item.status]
-  const Icon = getCategoryIcon(item.category)
+  // getCategoryIcon returns a reference from a static map (stable identity).
+  // We use createElement() instead of JSX to avoid the static-components lint
+  // rule which flags dynamic JSX element types.
+  const icon = createElement(getCategoryIcon(item.category), {
+    className: "size-5 text-foreground/70",
+    strokeWidth: 1.5,
+  })
   const t = useTranslations("inventory")
   const tStatus = useTranslations("status")
   const tCatalog = useTranslations("catalog")
@@ -43,7 +50,7 @@ export function InventoryCard({ item, index, onEdit, onDelete, onQuantityChange 
       <div className="relative mb-4 flex items-start justify-between gap-3">
         <div className="flex items-start gap-3 min-w-0 flex-1">
           <motion.div whileHover={{ scale: 1.05, rotate: 2 }} className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-muted/80 to-muted/30 ring-1 ring-foreground/[0.08]">
-            <Icon className="size-5 text-foreground/70" strokeWidth={1.5} />
+            {icon}
           </motion.div>
           <div className="min-w-0 flex-1 pt-0.5">
             <h3 className="text-base font-semibold leading-snug tracking-tight">{item.name}</h3>

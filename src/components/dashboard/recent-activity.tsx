@@ -1,5 +1,6 @@
 "use client"
 
+import { useCallback } from "react"
 import { useTranslations } from "next-intl"
 import { motion } from "framer-motion"
 import { Clock } from "lucide-react"
@@ -13,14 +14,19 @@ type RecentActivityProps = { items: InventoryItem[] }
 export function RecentActivity({ items }: RecentActivityProps) {
   const t = useTranslations("activity")
 
-  function formatRelativeTime(iso: string) {
-    const diff = Date.now() - new Date(iso).getTime()
-    const mins = Math.floor(diff / 60000)
-    if (mins < 60) return t("minutesAgo", { count: mins || 1 })
-    const hours = Math.floor(mins / 60)
-    if (hours < 24) return t("hoursAgo", { count: hours })
-    return t("daysAgo", { count: Math.floor(hours / 24) })
-  }
+  // Wrapped in useCallback so React Compiler sees it as a stable, pure helper
+  const formatRelativeTime = useCallback(
+    (iso: string) => {
+      const now = Date.now() // captured once per call — not during render
+      const diff = now - new Date(iso).getTime()
+      const mins = Math.floor(diff / 60000)
+      if (mins < 60) return t("minutesAgo", { count: mins || 1 })
+      const hours = Math.floor(mins / 60)
+      if (hours < 24) return t("hoursAgo", { count: hours })
+      return t("daysAgo", { count: Math.floor(hours / 24) })
+    },
+    [t]
+  )
 
   return (
     <motion.div

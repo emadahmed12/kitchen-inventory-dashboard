@@ -1,19 +1,28 @@
 "use client"
 
 import { useMemo } from "react"
+import dynamic from "next/dynamic"
 import { useTranslations } from "next-intl"
 import { motion } from "framer-motion"
 import { AlertTriangle, Boxes, FolderOpen, Tags } from "lucide-react"
 
-import { CategoryChart } from "@/components/dashboard/category-chart"
+// Heavy Recharts components lazy-loaded to reduce initial bundle
+import { ShimmerSkeleton } from "@/components/ui/shimmer-skeleton"
+const StatusChart = dynamic(() => import("@/components/dashboard/status-chart").then(m => ({ default: m.StatusChart })), {
+  ssr: false,
+  loading: () => <ShimmerSkeleton className="h-64 rounded-3xl" />,
+})
+const CategoryChart = dynamic(() => import("@/components/dashboard/category-chart").then(m => ({ default: m.CategoryChart })), {
+  ssr: false,
+  loading: () => <ShimmerSkeleton className="h-64 rounded-3xl" />,
+})
+
 import { InsightsWidgets } from "@/components/dashboard/insights-widgets"
 import { LowStockAlerts } from "@/components/dashboard/low-stock-alerts"
 import { RecentActivity } from "@/components/dashboard/recent-activity"
 import { StatCard } from "@/components/dashboard/stat-card"
-import { StatusChart } from "@/components/dashboard/status-chart"
 import { StorageOccupancy } from "@/components/dashboard/storage-occupancy"
 import { PageContainer } from "@/components/ui/page-container"
-import { ShimmerSkeleton } from "@/components/ui/shimmer-skeleton"
 import { useInventoryHydrated, useInventoryItems } from "@/hooks/use-inventory"
 import { useInventoryStats } from "@/hooks/use-inventory-stats"
 import { getInsights, getStatusChartData } from "@/lib/dashboard/analytics"

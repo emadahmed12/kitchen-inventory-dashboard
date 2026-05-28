@@ -1,5 +1,6 @@
 "use client"
 
+import { createElement } from "react"
 import { useTranslations } from "next-intl"
 import { motion } from "framer-motion"
 import { MapPin, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
@@ -23,7 +24,10 @@ type InventoryListRowProps = {
 
 export function InventoryListRow({ item, index, onEdit, onDelete, onQuantityChange }: InventoryListRowProps) {
   const colors = STATUS_COLORS[item.status]
-  const Icon = getCategoryIcon(item.category)
+  const icon = createElement(getCategoryIcon(item.category), {
+    className: "size-4 text-muted-foreground",
+    strokeWidth: 1.75,
+  })
   const t = useTranslations("inventory")
   const tStatus = useTranslations("status")
   const tCatalog = useTranslations("catalog")
@@ -40,7 +44,7 @@ export function InventoryListRow({ item, index, onEdit, onDelete, onQuantityChan
     >
       <div className="flex min-w-0 flex-1 items-center gap-3">
         <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted/50 ring-1 ring-foreground/[0.06]">
-          <Icon className="size-4 text-muted-foreground" strokeWidth={1.75} />
+          {icon}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">

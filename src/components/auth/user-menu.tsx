@@ -1,7 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { LogOut, Settings, User } from "lucide-react"
+import { LogOut, Settings } from "lucide-react"
 import { motion } from "framer-motion"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"

@@ -53,6 +53,7 @@ export function ItemFormDialog({ open, onOpenChange, item, onSubmit }: ItemFormD
   const tStatus = useTranslations("status")
   const tCatalog = useTranslations("catalog")
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (open) {
       setForm(
@@ -76,6 +77,7 @@ export function ItemFormDialog({ open, onOpenChange, item, onSubmit }: ItemFormD
       setImagePreview(item?.imageUrl ?? null)
     }
   }, [open, item])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]

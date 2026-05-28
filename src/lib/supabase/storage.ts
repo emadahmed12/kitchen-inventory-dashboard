@@ -2,6 +2,7 @@
 
 import { createClient } from "./client"
 import { SUPABASE_ENABLED } from "./config"
+import { imageFileSchema } from "@/lib/validation/auth"
 
 const BUCKET = "item-images"
 
@@ -19,6 +20,9 @@ export async function uploadItemImage(
   file: File
 ): Promise<string> {
   if (!SUPABASE_ENABLED) throw new Error("Supabase is not configured")
+
+  // Validate file before upload (size + MIME type)
+  imageFileSchema.parse({ size: file.size, type: file.type })
 
   const supabase = createClient()
   const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg"

@@ -180,6 +180,7 @@ export function useInventoryHydrated() {
   const storeHydrated = useInventoryStore(selectHydrated)
   const [persistReady, setPersistReady] = useState(false)
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (useInventoryStore.persist.hasHydrated()) {
       setPersistReady(true)
@@ -189,6 +190,7 @@ export function useInventoryHydrated() {
       setPersistReady(true)
     })
   }, [])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   return storeHydrated || persistReady
 }

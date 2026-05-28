@@ -2,6 +2,7 @@
 
 import { createServerClient } from "./server"
 import { dbItemToLocal, localInputToDb, localItemToDbUpdate } from "./sync"
+import { inventoryItemSchema, quantityUpdateSchema } from "@/lib/validation/inventory"
 import type { InventoryItem, InventoryItemInput } from "@/types/inventory"
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -13,6 +14,14 @@ async function getAuthenticatedClient() {
   } = await supabase.auth.getUser()
   if (!user) throw new Error("Not authenticated")
   return { supabase, user }
+}
+
+/**
+ * Validate input with Zod and throw a structured error if invalid.
+ * This runs server-side so client-side bypass is not possible.
+ */
+function validateInput<T>(schema: { parse: (data: unknown) => T }, data: unknown): T {
+  return schema.parse(data) // throws ZodError → becomes a serialized error
 }
 
 // ── inventory CRUD ────────────────────────────────────────────────────────────
@@ -32,10 +41,11 @@ export async function fetchInventoryItems(): Promise<InventoryItem[]> {
 /** Insert a new item and return the DB-assigned row. */
 export async function serverAddItem(input: InventoryItemInput): Promise<InventoryItem> {
   const { supabase, user } = await getAuthenticatedClient()
+  const validated = validateInput(inventoryItemSchema, input)
 
   const { data, error } = await supabase
     .from("inventory_items")
-    .insert(localInputToDb(input, user.id))
+    .insert(localInputToDb(validated as InventoryItemInput, user.id))
     .select()
     .single()
 
@@ -59,10 +69,11 @@ export async function serverUpdateItem(
   input: InventoryItemInput
 ): Promise<InventoryItem> {
   const { supabase, user } = await getAuthenticatedClient()
+  const validated = validateInput(inventoryItemSchema, input)
 
   const { data, error } = await supabase
     .from("inventory_items")
-    .update(localItemToDbUpdate(input))
+    .update(localItemToDbUpdate(validated as InventoryItemInput))
     .eq("id", id)
     .eq("user_id", user.id) // RLS guard at app level too
     .select()
@@ -88,10 +99,11 @@ export async function serverUpdateQuantity(
   previousQuantity: number
 ): Promise<InventoryItem> {
   const { supabase, user } = await getAuthenticatedClient()
+  const { quantity: validQuantity } = validateInput(quantityUpdateSchema, { quantity })
 
   const { data, error } = await supabase
     .from("inventory_items")
-    .update({ quantity, updated_at: new Date().toISOString() })
+    .update({ quantity: validQuantity, updated_at: new Date().toISOString() })
     .eq("id", id)
     .eq("user_id", user.id)
     .select()
