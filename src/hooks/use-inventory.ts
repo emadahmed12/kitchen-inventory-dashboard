@@ -192,7 +192,30 @@ export function useInventoryItems() {
  */
 export function useInventoryHydrated() {
   const [mounted, setMounted] = useState(false)
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setMounted(true) }, [])
+
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    // Primary: fires immediately on first client render
+    setMounted(true)
+
+    // DEBUG: visible in browser DevTools on production
+    if (typeof window !== "undefined") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(window as any).__kitchenHydrated = true
+      console.debug("[kitchen] useInventoryHydrated mounted ✓")
+    }
+
+    // Failsafe: if primary effect is somehow delayed, force-resolve after 2s
+    const timer = setTimeout(() => {
+      setMounted(true)
+      if (typeof window !== "undefined") {
+        console.warn("[kitchen] useInventoryHydrated failsafe triggered after 2s — investigate blocking provider")
+      }
+    }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [])
+  /* eslint-enable react-hooks/set-state-in-effect */
+
   return mounted
 }

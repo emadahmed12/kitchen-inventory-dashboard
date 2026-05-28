@@ -18,7 +18,6 @@ import {
 import { useShell } from "@/contexts/shell-context"
 import { getLowStockItems } from "@/lib/inventory/stats"
 import { useInventoryItems } from "@/hooks/use-inventory"
-import { useAuthInit } from "@/hooks/use-auth"
 import { cn } from "@/lib/utils"
 
 type TopbarProps = { onMenuClick?: () => void }
@@ -30,9 +29,6 @@ export function Topbar({ onMenuClick }: TopbarProps) {
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), [])
   const t = useTranslations("topbar")
-
-  // Initialise auth listener (safe to call here — idempotent)
-  useAuthInit()
 
   const inventoryItems = useInventoryItems()
   const alerts = useMemo(() => getLowStockItems(inventoryItems), [inventoryItems])

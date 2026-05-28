@@ -1,15 +1,10 @@
 "use client"
 
 import { useEffect } from "react"
+import { useShallow } from "zustand/react/shallow"
 import { SUPABASE_ENABLED } from "@/lib/supabase/config"
 import { createClient } from "@/lib/supabase/client"
-import {
-  useAuthStore,
-  selectUser,
-  selectProfile,
-  selectIsLoading,
-  selectAuthError,
-} from "@/store/auth-store"
+import { useAuthStore } from "@/store/auth-store"
 
 /**
  * Initialises the auth state and subscribes to Supabase auth changes.
@@ -19,7 +14,9 @@ import {
  * In dev/offline mode (no Supabase) it immediately clears the loading state.
  */
 export function useAuthInit() {
-  const { setUser, setProfile, setLoading, setError, clearAuth } = useAuthStore()
+  // Use getState() for actions — they're stable references, no selector subscription needed
+  // This prevents Topbar from subscribing to the auth store and re-rendering on auth changes
+  const { setUser, setProfile, setLoading, setError, clearAuth } = useAuthStore.getState()
 
   useEffect(() => {
     if (!SUPABASE_ENABLED) {
@@ -67,14 +64,20 @@ export function useAuthInit() {
   }, [])
 }
 
-/** Read-only hook for consuming auth state. */
+/**
+ * Read-only hook for consuming auth state.
+ * useShallow prevents re-renders when unrelated auth fields change
+ * (e.g. isLoading flip no longer re-renders SupabaseSyncProvider).
+ */
 export function useAuth() {
-  const user = useAuthStore(selectUser)
-  const profile = useAuthStore(selectProfile)
-  const isLoading = useAuthStore(selectIsLoading)
-  const error = useAuthStore(selectAuthError)
-
-  return { user, profile, isLoading, error }
+  return useAuthStore(
+    useShallow((s) => ({
+      user: s.user,
+      profile: s.profile,
+      isLoading: s.isLoading,
+      error: s.error,
+    }))
+  )
 }
 
 /** Sign out the current user. */
