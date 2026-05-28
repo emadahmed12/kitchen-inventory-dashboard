@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from "react"
+import { useShallow } from "zustand/react/shallow"
 import { toast } from "sonner"
 import { SUPABASE_ENABLED } from "@/lib/supabase/config"
 import { fetchInventoryItems, serverSeedItems } from "@/lib/supabase/actions"
@@ -20,8 +21,13 @@ import { useInventoryStore } from "@/store/inventory-store"
 export function useSupabaseSync() {
   const { user } = useAuth()
   const seededRef = useRef(false)
-  const { setItems, replaceItem, addItemToStore, deleteItemFromStore } =
-    useInventoryStore()
+
+  // Use stable selectors (not `useInventoryStore()` without selector) to avoid
+  // re-rendering SupabaseSyncProvider on every store state change.
+  const setItems = useInventoryStore(useShallow((s) => s.setItems))
+  const replaceItem = useInventoryStore(useShallow((s) => s.replaceItem))
+  const addItemToStore = useInventoryStore(useShallow((s) => s.addItemToStore))
+  const deleteItemFromStore = useInventoryStore(useShallow((s) => s.deleteItemFromStore))
 
   // ── initial load ───────────────────────────────────────────────────────────
   useEffect(() => {
