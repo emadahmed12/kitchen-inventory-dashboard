@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 import { ImagePlus, X } from "lucide-react"
 
-import { CATEGORIES, STORAGE_LOCATIONS, UNIT_TYPES } from "@/data/catalog"
+import { CATEGORIES, UNIT_TYPES } from "@/data/catalog"
+import { useStorageLocations } from "@/hooks/use-storage"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -19,7 +20,7 @@ import { STATUS_COLORS } from "@/lib/inventory/constants"
 import { SUPABASE_ENABLED } from "@/lib/supabase/config"
 import { uploadItemImage } from "@/lib/supabase/storage"
 import { useAuth } from "@/hooks/use-auth"
-import type { CategoryId, StorageLocationId, UnitTypeId } from "@/types/catalog"
+import type { CategoryId, UnitTypeId } from "@/types/catalog"
 import type { InventoryItem, InventoryItemInput, InventoryStatus } from "@/types/inventory"
 
 type ItemFormDialogProps = {
@@ -52,6 +53,7 @@ export function ItemFormDialog({ open, onOpenChange, item, onSubmit }: ItemFormD
   const t = useTranslations("form")
   const tStatus = useTranslations("status")
   const tCatalog = useTranslations("catalog")
+  const storageLocations = useStorageLocations()
 
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
@@ -231,10 +233,10 @@ export function ItemFormDialog({ open, onOpenChange, item, onSubmit }: ItemFormD
           <Field label={t("location")}>
             <SelectNative
               value={form.location}
-              onChange={(v) => setForm({ ...form, location: v as StorageLocationId })}
-              options={STORAGE_LOCATIONS.map((l) => ({
+              onChange={(v) => setForm({ ...form, location: v })}
+              options={storageLocations.map((l) => ({
                 value: l.id,
-                label: tCatalog(`locations.${l.id}`),
+                label: l.name,
               }))}
             />
           </Field>

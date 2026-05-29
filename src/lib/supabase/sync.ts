@@ -5,7 +5,7 @@
 
 import type { DbInventoryItem, DbInventoryItemInsert, Json } from "./types"
 import type { InventoryItem, InventoryItemInput } from "@/types/inventory"
-import type { CategoryId, StorageLocationId, UnitTypeId } from "@/types/catalog"
+import type { CategoryId, UnitTypeId } from "@/types/catalog"
 
 /** Map a DB row → local InventoryItem */
 export function dbItemToLocal(row: DbInventoryItem): InventoryItem {
@@ -15,7 +15,7 @@ export function dbItemToLocal(row: DbInventoryItem): InventoryItem {
     quantity: row.quantity,
     unit: row.unit as UnitTypeId,
     category: row.category as CategoryId,
-    location: row.location as StorageLocationId,
+    location: row.location,
     status: row.status,
     lowStockThreshold: row.low_stock_threshold,
     notes: row.notes ?? undefined,

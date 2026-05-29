@@ -1,7 +1,8 @@
 import { CATEGORIES, STORAGE_LOCATIONS } from "@/data/catalog"
 import { needsAttention, isLowStock } from "@/lib/inventory/status"
-import type { CategoryId, StorageLocationId } from "@/types/catalog"
+import type { CategoryId } from "@/types/catalog"
 import type { InventoryItem, InventoryStats } from "@/types/inventory"
+import type { UserStorageLocation, LocationOccupancy } from "@/types/storage"
 
 export function computeInventoryStats(items: InventoryItem[]): InventoryStats {
   const categorySet = new Set<CategoryId>()
@@ -42,18 +43,43 @@ export function computeCategoryBreakdown(items: InventoryItem[]) {
   })).filter((d) => d.value > 0)
 }
 
-export function computeLocationOccupancy(items: InventoryItem[]) {
-  return STORAGE_LOCATIONS.map((loc) => {
-    const count = items.filter((i) => i.location === loc.id).length
-    const pct = Math.min(100, Math.round((count / loc.capacity) * 100))
-    return {
-      locationId: loc.id as StorageLocationId,
-      location: loc.label,
-      count,
-      pct,
-      capacity: loc.capacity,
-    }
-  }).filter((s) => s.count > 0)
+/**
+ * Compute per-location occupancy.
+ *
+ * When `dynamicLocations` is provided (Supabase-loaded), those take
+ * precedence. Falls back to the static STORAGE_LOCATIONS catalog so
+ * the dashboard continues to work in dev / offline mode.
+ */
+export function computeLocationOccupancy(
+  items: InventoryItem[],
+  dynamicLocations?: UserStorageLocation[]
+): LocationOccupancy[] {
+  const locations =
+    dynamicLocations && dynamicLocations.length > 0
+      ? dynamicLocations.map((l) => ({
+          id: l.id,
+          label: l.name,
+          capacity: l.capacity,
+        }))
+      : STORAGE_LOCATIONS.map((l) => ({
+          id: l.id,
+          label: l.label,
+          capacity: l.capacity,
+        }))
+
+  return locations
+    .map((loc) => {
+      const count = items.filter((i) => i.location === loc.id).length
+      const pct = Math.min(100, Math.round((count / loc.capacity) * 100))
+      return {
+        locationId: loc.id,
+        location: loc.label,
+        count,
+        pct,
+        capacity: loc.capacity,
+      }
+    })
+    .filter((s) => s.count > 0)
 }
 
 export function getLowStockItems(items: InventoryItem[], limit = 5) {

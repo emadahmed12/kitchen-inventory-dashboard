@@ -164,6 +164,42 @@ export type Database = {
         }
         Relationships: Relationship[]
       }
+
+      storage_locations: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          type: string
+          capacity: number
+          color: string | null
+          icon: string | null
+          is_default: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          type?: string
+          capacity?: number
+          color?: string | null
+          icon?: string | null
+          is_default?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          name?: string
+          type?: string
+          capacity?: number
+          color?: string | null
+          icon?: string | null
+          updated_at?: string
+        }
+        Relationships: Relationship[]
+      }
     }
     Views: Record<string, never>
     Functions: Record<string, never>
@@ -176,3 +212,4 @@ export type DbInventoryItem = Database["public"]["Tables"]["inventory_items"]["R
 export type DbInventoryItemInsert = Database["public"]["Tables"]["inventory_items"]["Insert"]
 export type DbProfile = Database["public"]["Tables"]["profiles"]["Row"]
 export type DbActivityLog = Database["public"]["Tables"]["activity_logs"]["Row"]
+export type DbStorageLocation = Database["public"]["Tables"]["storage_locations"]["Row"]

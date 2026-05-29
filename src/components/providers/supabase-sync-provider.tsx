@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react"
 import { useSupabaseSync } from "@/hooks/use-supabase-sync"
 import { useAuthInit } from "@/hooks/use-auth"
+import { useStorageSync } from "@/hooks/use-storage"
 
 /**
  * Initialises auth + Supabase sync for all app routes.
@@ -23,5 +24,6 @@ export function SupabaseSyncProvider({ children }: { children: React.ReactNode }
 
   useAuthInit()
   useSupabaseSync()
+  useStorageSync()
   return <>{children}</>
 }

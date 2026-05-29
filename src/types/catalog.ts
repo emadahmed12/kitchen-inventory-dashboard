@@ -8,8 +8,15 @@ export type CategoryId =
   | "spices"
   | "oils"
 
-/** Storage location identifiers */
-export type StorageLocationId = "kitchen" | "fridge" | "freezer" | "pantry"
+/**
+ * Storage location identifier.
+ *
+ * Intentionally widened to `string` to support dynamic user-created storage
+ * locations alongside the four built-in static slugs ('kitchen', 'fridge',
+ * 'freezer', 'pantry').  Those static slugs remain valid string literals —
+ * no existing inventory data needs migrating.
+ */
+export type StorageLocationId = string
 
 /** Unit type identifiers */
 export type UnitTypeId = "kg" | "can" | "bag" | "bottle"
@@ -20,16 +27,16 @@ export type Category = {
   description?: string
 }
 
+/** Static catalog shape — kept for seed / fallback purposes. */
 export type StorageLocation = {
   id: StorageLocationId
   label: string
-  /** Max items before considered full (for occupancy UI) */
+  /** Default capacity (max items before considered full). */
   capacity: number
 }
 
 export type UnitType = {
   id: UnitTypeId
   label: string
-  /** Plural label for quantity display */
   labelPlural: string
 }

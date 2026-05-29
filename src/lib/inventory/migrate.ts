@@ -1,6 +1,6 @@
 import { DEFAULT_LOW_STOCK_THRESHOLD } from "@/data/catalog"
 import { SEED_INVENTORY } from "@/data/seed-inventory"
-import type { CategoryId, StorageLocationId, UnitTypeId } from "@/types/catalog"
+import type { CategoryId, UnitTypeId } from "@/types/catalog"
 import type { InventoryItem, InventoryStatus } from "@/types/inventory"
 
 const LEGACY_STORAGE_KEY = "kitchen-inventory-v1"
@@ -16,7 +16,7 @@ const LEGACY_CATEGORY_MAP: Record<string, CategoryId> = {
   snacks: "pasta",
 }
 
-const LEGACY_LOCATION_MAP: Record<string, StorageLocationId> = {
+const LEGACY_LOCATION_MAP: Record<string, string> = {
   "الخزانة الجافة": "pantry",
   "الرف العلوي": "pantry",
   "درج المعكرونة": "kitchen",

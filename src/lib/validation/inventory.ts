@@ -1,7 +1,9 @@
 import { z } from "zod"
 
 const CATEGORY_IDS = ["canned", "grains", "pasta", "bread", "beverages", "spices", "oils"] as const
-const LOCATION_IDS = ["kitchen", "fridge", "freezer", "pantry"] as const
+// Note: location is now a free-form string — users can create custom locations.
+// Validation only checks that the field is non-empty.
+// Server-side reference integrity is enforced by the storage_locations RLS policies.
 const UNIT_IDS = ["kg", "can", "bag", "bottle"] as const
 const STATUS_VALUES = ["healthy", "opened", "low", "almost_finished"] as const
 
@@ -19,7 +21,7 @@ export const inventoryItemSchema = z.object({
     .max(9_999, "Quantity must be 9,999 or less"),
   unit: z.enum(UNIT_IDS, { error: "Invalid unit" }),
   category: z.enum(CATEGORY_IDS, { error: "Invalid category" }),
-  location: z.enum(LOCATION_IDS, { error: "Invalid location" }),
+  location: z.string().min(1, "Storage location is required"),
   status: z.enum(STATUS_VALUES).optional(),
   lowStockThreshold: z
     .number({ error: "Threshold must be a number" })
