@@ -54,7 +54,11 @@ export function filterAndSortItems(
     result = result.filter((item) => item.category === filters.category)
   }
 
-  if (filters.status !== "all") {
+  if (filters.status === "needsAttention") {
+    result = result.filter(
+      (item) => item.status === "low" || item.status === "almost_finished"
+    )
+  } else if (filters.status !== "all") {
     result = result.filter((item) => item.status === filters.status)
   }
 
@@ -67,4 +71,11 @@ export function hasActiveFilters(filters: InventoryFilterState): boolean {
     filters.category !== "all" ||
     filters.status !== "all"
   )
+}
+
+/** Resolve URL ?status param to a valid StatusFilter value. */
+export function resolveStatusParam(raw: string | undefined): InventoryFilterState["status"] {
+  const valid = ["all", "healthy", "opened", "low", "almost_finished", "needsAttention"]
+  if (!raw || !valid.includes(raw)) return "all"
+  return raw as InventoryFilterState["status"]
 }

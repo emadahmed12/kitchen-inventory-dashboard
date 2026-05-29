@@ -48,7 +48,11 @@
     "needsAttention": "Needs Attention",
     "needsAttentionHint": "Low or almost finished",
     "categories": "Categories",
-    "categoriesHint": "Active categories"
+    "categoriesHint": "Active categories",
+    "totalAriaLabel": "View all items in inventory",
+    "openedAriaLabel": "Filter opened items in inventory",
+    "needsAttentionAriaLabel": "Filter low-stock items in inventory",
+    "categoriesAriaLabel": "View category analytics"
   },
   "alerts": {
     "title": "Stock Alerts",
@@ -214,19 +218,65 @@
   },
   "shopping": {
     "title": "Shopping List",
-    "subtitle": "Items that need restocking — automatically synced from your inventory.",
-    "needsRestocking": "Needs restocking",
-    "currentQty": "Current qty",
-    "suggested": "Suggested",
-    "noItems": "All stocked up!",
-    "noItemsDesc": "No items need restocking right now. Low-stock items will appear here automatically.",
-    "checkedOff": "Checked off",
-    "uncheck": "Uncheck",
-    "check": "Check",
-    "uncheckAll": "Uncheck all",
-    "statusLow": "Low stock",
-    "statusAlmost": "Almost finished",
-    "totalNeeded": "{count} items need restocking"
+    "subtitle": "Prepare your shopping list and shop smart.",
+    "startShopping": "Start shopping",
+    "resumeShopping": "Resume shopping",
+    "cancelSession": "Cancel session",
+    "finishShopping": "Finish shopping",
+    "markAllDone": "Mark all purchased",
+    "addItem": "Add item",
+    "addManualItem": "Add manually",
+    "manualItemName": "Item name",
+    "manualItemQty": "Quantity",
+    "manualItemUnit": "Unit",
+    "clearList": "Clear list",
+    "emptyList": "Shopping list is empty",
+    "emptyListDesc": "Low-stock items appear here automatically, or add items manually.",
+    "currentStock": "In stock",
+    "needed": "Needed",
+    "bought": "Bought",
+    "remaining": "Remaining",
+    "autoDetected": "Needs restocking",
+    "manual": "Manual",
+    "addToList": "Add to list",
+    "removeFromList": "Remove from list",
+    "states": {
+      "pending": "Not bought",
+      "partial": "Partially bought",
+      "purchased": "Purchased",
+      "skipped": "Skipped"
+    },
+    "quickActions": {
+      "add1": "+1",
+      "add5": "+5",
+      "markDone": "✓ Done",
+      "skip": "Skip"
+    },
+    "progress": {
+      "title": "Shopping progress",
+      "of": "{done} of {total}",
+      "purchased": "{count} purchased",
+      "partial": "{count} partial",
+      "remaining": "{count} remaining",
+      "skipped": "{count} skipped"
+    },
+    "review": {
+      "title": "Review purchases",
+      "subtitle": "Confirm the changes before they are applied to your inventory.",
+      "itemsBought": "Items purchased",
+      "itemsSkipped": "Items skipped",
+      "currentStock": "Current stock",
+      "adding": "Adding",
+      "newStock": "New stock",
+      "noUpdates": "No inventory changes to apply.",
+      "apply": "Apply changes",
+      "cancel": "Cancel",
+      "applied": "Inventory updated successfully!"
+    },
+    "history": {
+      "title": "Shopping history",
+      "noHistory": "No history yet."
+    }
   },
   "analytics": {
     "title": "Analytics",

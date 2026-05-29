@@ -10,7 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from "@/components/ui/input"
 import type { CategoryId } from "@/types/catalog"
 import type { InventoryStatus } from "@/types/inventory"
-import type { SortOption, ViewMode } from "@/types/ui"
+import type { SortOption, StatusFilter, ViewMode } from "@/types/ui"
 import { cn } from "@/lib/utils"
 
 type InventoryToolbarProps = {
@@ -18,8 +18,8 @@ type InventoryToolbarProps = {
   onSearchChange: (value: string) => void
   category: CategoryId | "all"
   onCategoryChange: (value: CategoryId | "all") => void
-  status: InventoryStatus | "all"
-  onStatusChange: (value: InventoryStatus | "all") => void
+  status: StatusFilter
+  onStatusChange: (value: StatusFilter) => void
   sort: SortOption
   onSortChange: (value: SortOption) => void
   view: ViewMode
@@ -48,7 +48,8 @@ export function InventoryToolbar({
     ...CATEGORIES.map((c) => ({ value: c.id, label: tCatalog(c.id) })),
   ]
 
-  const statusLabel = (s: InventoryStatus | "all") => s === "all" ? t("all") : tStatus(s)
+  const statusLabel = (s: StatusFilter) =>
+    s === "all" ? t("all") : s === "needsAttention" ? t("all") : tStatus(s as InventoryStatus)
   const sortLabel = (s: SortOption) => tSort(s)
 
   return (

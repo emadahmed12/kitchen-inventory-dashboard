@@ -16,9 +16,8 @@ import type { CategoryId } from "@/types/catalog"
 import type {
   InventoryItem,
   InventoryItemInput,
-  InventoryStatus,
 } from "@/types/inventory"
-import type { InventoryFilterState, SortOption, ViewMode } from "@/types/ui"
+import type { InventoryFilterState, SortOption, StatusFilter, ViewMode } from "@/types/ui"
 
 const DEFAULT_FILTERS: InventoryFilterState = {
   search: "",
@@ -42,7 +41,7 @@ type InventoryState = {
   setHasHydrated: (value: boolean) => void
   setSearch: (search: string) => void
   setCategory: (category: CategoryId | "all") => void
-  setStatus: (status: InventoryStatus | "all") => void
+  setStatus: (status: StatusFilter) => void
   setSort: (sort: SortOption) => void
   setViewMode: (view: ViewMode) => void
   clearFilters: () => void

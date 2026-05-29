@@ -48,7 +48,11 @@
     "needsAttention": "يحتاج انتباه",
     "needsAttentionHint": "منخفض أو قارب على الانتهاء",
     "categories": "الفئات",
-    "categoriesHint": "تصنيفات نشطة"
+    "categoriesHint": "تصنيفات نشطة",
+    "totalAriaLabel": "عرض جميع المنتجات في المخزون",
+    "openedAriaLabel": "تصفية المنتجات المفتوحة",
+    "needsAttentionAriaLabel": "تصفية المنتجات المنخفضة",
+    "categoriesAriaLabel": "عرض تحليلات الفئات"
   },
   "alerts": {
     "title": "تنبيهات المخزون",
@@ -214,19 +218,65 @@
   },
   "shopping": {
     "title": "قائمة التسوق",
-    "subtitle": "المنتجات التي تحتاج إعادة تموين — تُحدَّث تلقائياً من المخزون.",
-    "needsRestocking": "يحتاج تموين",
-    "currentQty": "الكمية الحالية",
-    "suggested": "مقترح",
-    "noItems": "مخزونك ممتاز!",
-    "noItemsDesc": "لا توجد منتجات تحتاج شراء حالياً. عندما ينخفض مخزون أي منتج سيظهر هنا.",
-    "checkedOff": "تم التأشير",
-    "uncheck": "إلغاء التأشير",
-    "check": "تأشير",
-    "uncheckAll": "إلغاء الكل",
-    "statusLow": "مخزون منخفض",
-    "statusAlmost": "قارب على الانتهاء",
-    "totalNeeded": "{count} منتج يحتاج شراء"
+    "subtitle": "جهّز قائمة مشترياتك وتسوّق بذكاء.",
+    "startShopping": "ابدأ التسوق",
+    "resumeShopping": "استكمال التسوق",
+    "cancelSession": "إلغاء الجلسة",
+    "finishShopping": "إنهاء التسوق",
+    "markAllDone": "تأشير الكل كمشتري",
+    "addItem": "إضافة منتج",
+    "addManualItem": "إضافة يدوي",
+    "manualItemName": "اسم المنتج",
+    "manualItemQty": "الكمية",
+    "manualItemUnit": "الوحدة",
+    "clearList": "مسح القائمة",
+    "emptyList": "قائمة التسوق فارغة",
+    "emptyListDesc": "المنتجات ذات المخزون المنخفض ستظهر هنا تلقائياً، أو أضف منتجات يدوياً.",
+    "currentStock": "المخزون الحالي",
+    "needed": "مطلوب",
+    "bought": "تم الشراء",
+    "remaining": "المتبقي",
+    "autoDetected": "يحتاج تموين",
+    "manual": "يدوي",
+    "addToList": "أضف للقائمة",
+    "removeFromList": "إزالة من القائمة",
+    "states": {
+      "pending": "لم يُشترَ بعد",
+      "partial": "مشترى جزئياً",
+      "purchased": "مشترى",
+      "skipped": "تخطي"
+    },
+    "quickActions": {
+      "add1": "+1",
+      "add5": "+5",
+      "markDone": "✓ تم",
+      "skip": "تخطي"
+    },
+    "progress": {
+      "title": "تقدم التسوق",
+      "of": "{done} من {total}",
+      "purchased": "{count} مشترى",
+      "partial": "{count} جزئي",
+      "remaining": "{count} متبقي",
+      "skipped": "{count} متخطى"
+    },
+    "review": {
+      "title": "مراجعة المشتريات",
+      "subtitle": "تأكد من التغييرات قبل تطبيقها على المخزون.",
+      "itemsBought": "المنتجات المشتراة",
+      "itemsSkipped": "المنتجات المتخطاة",
+      "currentStock": "المخزون الحالي",
+      "adding": "يُضاف",
+      "newStock": "المخزون الجديد",
+      "noUpdates": "لا توجد تغييرات للتطبيق.",
+      "apply": "تطبيق التغييرات",
+      "cancel": "إلغاء",
+      "applied": "تم تحديث المخزون بنجاح!"
+    },
+    "history": {
+      "title": "سجل التسوق",
+      "noHistory": "لا يوجد سجل بعد."
+    }
   },
   "analytics": {
     "title": "التحليلات",

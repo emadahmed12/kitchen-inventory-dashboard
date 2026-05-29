@@ -14,14 +14,28 @@ import { PageContainer } from "@/components/ui/page-container"
 import { useShell } from "@/contexts/shell-context"
 import { useInventory } from "@/hooks/use-inventory"
 import type { InventoryItem, InventoryItemInput } from "@/types/inventory"
+import type { StatusFilter } from "@/types/ui"
 
-export function InventoryPage() {
+type InventoryPageProps = {
+  /** Pre-applied status filter from URL (?status=…). Applied once on mount. */
+  initialStatus?: StatusFilter
+}
+
+export function InventoryPage({ initialStatus }: InventoryPageProps) {
   const {
     filteredItems, stats, hydrated,
     search, setSearch, category, setCategory, status, setStatus,
     sort, setSort, view, setViewMode, addItem, updateItem, deleteItem,
     updateQuantity, clearFilters, hasActiveFilters,
   } = useInventory()
+
+  // Apply the URL filter on first mount (deep-link from dashboard cards)
+  useEffect(() => {
+    if (initialStatus && initialStatus !== "all") {
+      setStatus(initialStatus)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialStatus])
 
   const { registerAddItem, searchQuery, setSearchQuery } = useShell()
   const t = useTranslations("inventory")

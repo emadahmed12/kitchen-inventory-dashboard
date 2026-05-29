@@ -11,9 +11,15 @@ export type SortOption =
 
 export type ViewMode = "grid" | "list"
 
+/**
+ * `needsAttention` is a virtual filter combining `low` + `almost_finished`.
+ * It is applied via URL (?status=needsAttention) from the dashboard KPI card.
+ */
+export type StatusFilter = InventoryStatus | "all" | "needsAttention"
+
 export type InventoryFilterState = {
   search: string
   category: CategoryId | "all"
-  status: InventoryStatus | "all"
+  status: StatusFilter
   sort: SortOption
 }
