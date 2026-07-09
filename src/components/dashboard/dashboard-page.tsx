@@ -37,6 +37,16 @@ export function DashboardPage() {
   )
   const insights = useMemo(() => getInsights(items), [items])
 
+  // Live delta for the Total card — the only KPI with honest history
+  // (createdAt). Status KPIs have no snapshots, so they get no fake trends.
+  const addedThisWeek = useMemo(() => {
+    // Time-derived value: intentionally frozen per items-change. Staleness of
+    // a few minutes is fine for a "+N this week" hint.
+    // eslint-disable-next-line react-hooks/purity
+    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
+    return items.filter((i) => new Date(i.createdAt).getTime() > weekAgo).length
+  }, [items])
+
   if (!hydrated) {
     return (
       <PageContainer size="wide" className="flex flex-col gap-5">
@@ -62,6 +72,7 @@ export function DashboardPage() {
         <motion.div variants={staggerItem}>
           <StatCard
             title={t("total")} value={stats.total.toLocaleString()}
+            hint={addedThisWeek > 0 ? t("addedThisWeek", { count: addedThisWeek }) : undefined}
             icon={Boxes} href="/inventory" ariaLabel={t("totalAriaLabel")}
           />
         </motion.div>

@@ -52,7 +52,8 @@
     "totalAriaLabel": "View all items in inventory",
     "openedAriaLabel": "Filter opened items in inventory",
     "needsAttentionAriaLabel": "Filter low-stock items in inventory",
-    "categoriesAriaLabel": "View category analytics"
+    "categoriesAriaLabel": "View category analytics",
+    "addedThisWeek": "+{count} this week"
   },
   "alerts": {
     "title": "Stock Alerts",
@@ -407,9 +408,17 @@
     "settings": "Settings"
   },
   "pages": {
-    "shopping": { "title": "Shopping List" },
-    "analytics": { "title": "Analytics" },
-    "settings": { "title": "Settings" },
-    "storage": { "title": "Storage" }
+    "shopping": {
+      "title": "Shopping List"
+    },
+    "analytics": {
+      "title": "Analytics"
+    },
+    "settings": {
+      "title": "Settings"
+    },
+    "storage": {
+      "title": "Storage"
+    }
   }
 }

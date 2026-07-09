@@ -52,7 +52,8 @@
     "totalAriaLabel": "عرض جميع المنتجات في المخزون",
     "openedAriaLabel": "تصفية المنتجات المفتوحة",
     "needsAttentionAriaLabel": "تصفية المنتجات المنخفضة",
-    "categoriesAriaLabel": "عرض تحليلات الفئات"
+    "categoriesAriaLabel": "عرض تحليلات الفئات",
+    "addedThisWeek": "{count, plural, zero {} one {+منتج هذا الأسبوع} two {+منتجان هذا الأسبوع} few {+# منتجات هذا الأسبوع} many {+# منتجاً هذا الأسبوع} other {+# منتج هذا الأسبوع}}"
   },
   "alerts": {
     "title": "تنبيهات المخزون",
@@ -407,9 +408,17 @@
     "settings": "الإعدادات"
   },
   "pages": {
-    "shopping": { "title": "قائمة التسوق" },
-    "analytics": { "title": "التحليلات" },
-    "settings": { "title": "الإعدادات" },
-    "storage": { "title": "أماكن التخزين" }
+    "shopping": {
+      "title": "قائمة التسوق"
+    },
+    "analytics": {
+      "title": "التحليلات"
+    },
+    "settings": {
+      "title": "الإعدادات"
+    },
+    "storage": {
+      "title": "أماكن التخزين"
+    }
   }
 }

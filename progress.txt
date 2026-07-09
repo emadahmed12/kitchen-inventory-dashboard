@@ -1,0 +1,44 @@
+PROGRESS — Kitchen Inventory Dashboard
+=======================================
+
+Current state (2026-05): production-ready bilingual PWA on Vercel.
+
+SHIPPED
+- Bilingual i18n: Arabic (default, RTL, Cairo) + English (/en, LTR, Inter),
+  next-intl v4, ICU plurals throughout
+- Supabase backend: auth (email + Google OAuth), per-user RLS, realtime
+  sync for inventory_items AND storage_locations, image upload (Storage),
+  activity logs; dev/offline fallback when env vars absent
+- Inventory: CRUD with optimistic updates + rollback, filters (incl.
+  virtual needsAttention), URL deep-linking (?status=), grid/list views
+- Dynamic storage management: CRUD, capacity/occupancy, color, notes,
+  item move/bulk-move, search + type filters, delete safety
+- Shopping Mode: pre-session list (auto low-stock + manual), live session
+  (states pending/partial/purchased/skipped, quick actions), review screen
+  applying quantities to inventory, local history (20 sessions)
+- Clickable dashboard KPI cards with deep-linked filters + honest
+  "+N this week" trend on Total (from createdAt)
+- Production hardening: error boundaries, loading.tsx everywhere, Zod
+  validation server-side, Sentry (activates via NEXT_PUBLIC_SENTRY_DSN),
+  structured logger, offline indicator + reduced-motion support,
+  Vitest (40 tests) + Playwright config + GitHub Actions CI
+
+DESIGN (post-audit, all 19 findings implemented)
+- DESIGN_SYSTEM.md: tokens (--status-*), radius map, icon stroke scale,
+  focus/touch standards, RTL rules
+- EmptyState + PageSkeleton shared components
+- Full keyboard focus-visible coverage; progressbar aria semantics
+
+KNOWN GAPS / NEXT CANDIDATES
+- Shared household inventory (multi-account, one kitchen) — needs
+  households table + membership + RLS rework
+- Shopping sessions not yet persisted to Supabase (tables exist in
+  migration 003; store is localStorage-only)
+- Shopping analytics (most purchased, frequency) — needs session history
+  in DB first
+- Offline mutation queue (currently optimistic-only, no retry queue)
+- Push notifications (PWA plumbing ready, no server trigger)
+
+OPERATIONAL NOTES
+- Supabase migrations 001–004 must be applied in the SQL editor
+- Env vars: see .env.local.example; Supabase absent = local-only mode
