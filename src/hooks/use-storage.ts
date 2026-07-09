@@ -12,6 +12,7 @@ import {
   seedDefaultStorageLocations,
   moveItemsToLocation,
 } from "@/lib/supabase/storage-actions"
+import { useRealtimeStorage } from "@/lib/supabase/realtime"
 import { useInventoryStore } from "@/store/inventory-store"
 import {
   useStorageStore,
@@ -68,6 +69,13 @@ export function useStorageSync() {
     load()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id])
+
+  // Live sync across tabs/devices — new/edited/deleted locations appear instantly
+  useRealtimeStorage(user?.id ?? null, {
+    onInsert: addLocation,
+    onUpdate: (location) => replaceLocation(location.id, location),
+    onDelete: storeDelete,
+  })
 
   return { addLocation, replaceLocation, storeDelete }
 }
