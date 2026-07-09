@@ -1,9 +1,15 @@
 "use client"
 
 import { usePathname } from "next/navigation"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { motion } from "framer-motion"
-import { ChefHat, PanelRightClose, PanelRightOpen } from "lucide-react"
+import {
+  ChefHat,
+  PanelLeftClose,
+  PanelLeftOpen,
+  PanelRightClose,
+  PanelRightOpen,
+} from "lucide-react"
 
 import { Link } from "@/i18n/navigation"
 import { navItems } from "@/components/layout/nav-config"
@@ -28,6 +34,12 @@ export function Sidebar({ className, onNavigate, collapsed: collapsedProp }: Sid
   const collapsed = collapsedProp ?? sidebarCollapsed
   const t = useTranslations("nav")
   const ts = useTranslations("sidebar")
+  const isRTL = useLocale() === "ar"
+
+  // Direction-aware panel icons: the sidebar sits on the right in RTL and on
+  // the left in LTR — the collapse/expand chevrons must point accordingly.
+  const CollapseIcon = isRTL ? PanelRightClose : PanelLeftClose
+  const ExpandIcon = isRTL ? PanelRightOpen : PanelLeftOpen
 
   return (
     <aside
@@ -59,7 +71,7 @@ export function Sidebar({ className, onNavigate, collapsed: collapsedProp }: Sid
             onClick={toggleSidebar}
             aria-label={ts("collapse")}
           >
-            <PanelRightOpen className="size-4" />
+            <CollapseIcon className="size-4" />
           </Button>
         )}
       </div>
@@ -73,7 +85,7 @@ export function Sidebar({ className, onNavigate, collapsed: collapsedProp }: Sid
             onClick={toggleSidebar}
             aria-label={ts("expand")}
           >
-            <PanelRightClose className="size-4" />
+            <ExpandIcon className="size-4" />
           </Button>
         </div>
       )}
@@ -127,7 +139,7 @@ export function Sidebar({ className, onNavigate, collapsed: collapsedProp }: Sid
               {collapsed ? (
                 <Tooltip>
                   <TooltipTrigger asChild>{link}</TooltipTrigger>
-                  <TooltipContent side="left">{title}</TooltipContent>
+                  <TooltipContent side={isRTL ? "left" : "right"}>{title}</TooltipContent>
                 </Tooltip>
               ) : (
                 link

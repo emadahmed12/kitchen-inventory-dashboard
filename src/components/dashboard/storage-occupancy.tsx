@@ -43,7 +43,7 @@ export function StorageOccupancy({ data }: { data: StorageItem[] }) {
                 {t("items", { count: item.count })}
               </span>
             </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+            <div className="h-1.5 overflow-hidden rounded-full bg-muted" role="progressbar" aria-valuenow={item.pct} aria-valuemin={0} aria-valuemax={100} aria-label={item.location}>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${item.pct}%` }}

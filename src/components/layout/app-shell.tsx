@@ -27,7 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="relative flex h-dvh w-full flex-col overflow-hidden">
+      <div className="relative flex min-h-0 w-full flex-1 flex-col overflow-hidden">
         <div className="ambient-bg pointer-events-none fixed inset-0 -z-10" aria-hidden />
 
         <div className="flex min-h-0 flex-1 overflow-hidden">

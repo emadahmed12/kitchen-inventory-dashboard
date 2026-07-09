@@ -11,6 +11,7 @@ import { ShimmerSkeleton } from "@/components/ui/shimmer-skeleton"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { EmptyState } from "@/components/ui/empty-state"
 import { StorageFormDialog } from "@/components/storage/storage-form-dialog"
 import { DeleteStorageDialog } from "@/components/storage/delete-storage-dialog"
 import { MoveItemsDialog } from "@/components/storage/move-items-dialog"
@@ -30,7 +31,7 @@ const FILTER_TYPES: Array<StorageType | "all"> = [
 
 // ── occupancy bar ─────────────────────────────────────────────────────────────
 
-function OccupancyBar({ pct, color }: { pct: number; color?: string }) {
+function OccupancyBar({ pct, color, label }: { pct: number; color?: string; label?: string }) {
   const defaultColor =
     pct >= 80
       ? "bg-destructive"
@@ -39,7 +40,14 @@ function OccupancyBar({ pct, color }: { pct: number; color?: string }) {
         : "bg-primary"
 
   return (
-    <div className="h-1.5 w-full rounded-full bg-muted/50">
+    <div
+      className="h-1.5 w-full rounded-full bg-muted/50"
+      role="progressbar"
+      aria-valuenow={pct}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label={label}
+    >
       <motion.div
         className={cn("h-full rounded-full", !color && defaultColor)}
         style={color ? { background: color } : undefined}
@@ -163,7 +171,7 @@ function StorageCard({
       </div>
 
       {/* Occupancy bar */}
-      <OccupancyBar pct={pct} color={location.color} />
+      <OccupancyBar pct={pct} color={location.color} label={location.name} />
 
       {/* Notes */}
       {location.notes && (
@@ -332,7 +340,7 @@ export function StoragePage() {
                 key={tp}
                 onClick={() => setTypeFilter(tp)}
                 className={cn(
-                  "rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors",
+                  "rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   typeFilter === tp
                     ? "border-primary/50 bg-primary/10 text-primary"
                     : "border-border/50 bg-muted/30 text-muted-foreground hover:border-border hover:text-foreground"
@@ -347,28 +355,21 @@ export function StoragePage() {
 
       {/* Empty state */}
       {locations.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 bg-muted/15 px-6 py-24 text-center"
-        >
-          <div className="mb-4 flex size-16 items-center justify-center rounded-2xl bg-muted/40 ring-1 ring-foreground/[0.06]">
-            <Archive className="size-7 text-muted-foreground" strokeWidth={1.25} />
-          </div>
-          <p className="text-base font-semibold">{t("allEmpty")}</p>
-          <p className="mt-2 max-w-xs text-sm text-muted-foreground">{t("allEmptyDesc")}</p>
-          {SUPABASE_ENABLED && (
-            <Button
-              onClick={() => setFormOpen(true)}
-              className="mt-5 gap-2 rounded-xl"
-            >
-              <Plus className="size-4" strokeWidth={2} />
-              {t("addLocation")}
-            </Button>
-          )}
-        </motion.div>
+        <EmptyState
+          icon={Archive}
+          title={t("allEmpty")}
+          description={t("allEmptyDesc")}
+          action={
+            SUPABASE_ENABLED ? (
+              <Button onClick={() => setFormOpen(true)} className="gap-2 rounded-xl">
+                <Plus className="size-4" strokeWidth={2} />
+                {t("addLocation")}
+              </Button>
+            ) : undefined
+          }
+        />
       ) : filteredLocations.length === 0 ? (
-        <p className="py-12 text-center text-sm text-muted-foreground">{t("noResults")}</p>
+        <EmptyState icon={Search} title={t("noResults")} className="py-14" />
       ) : (
         <motion.div
           variants={staggerContainer}

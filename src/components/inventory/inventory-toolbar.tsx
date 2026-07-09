@@ -30,7 +30,7 @@ type InventoryToolbarProps = {
   resultCount: number
 }
 
-const STATUS_KEYS: Array<InventoryStatus | "all"> = ["all", "healthy", "opened", "low", "almost_finished"]
+const STATUS_KEYS: StatusFilter[] = ["all", "healthy", "opened", "low", "almost_finished", "needsAttention"]
 const SORT_KEYS: SortOption[] = ["name-asc", "name-desc", "quantity-desc", "quantity-asc", "status", "updated-desc"]
 
 export function InventoryToolbar({
@@ -49,7 +49,7 @@ export function InventoryToolbar({
   ]
 
   const statusLabel = (s: StatusFilter) =>
-    s === "all" ? t("all") : s === "needsAttention" ? t("all") : tStatus(s as InventoryStatus)
+    s === "all" ? t("all") : s === "needsAttention" ? t("needsAttention") : tStatus(s as InventoryStatus)
   const sortLabel = (s: SortOption) => tSort(s)
 
   return (

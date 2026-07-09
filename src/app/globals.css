@@ -73,6 +73,11 @@
   --chart-4: oklch(0.7 0.06 85);
   --chart-5: oklch(0.55 0.04 265);
   --radius: 1rem;
+  /* Inventory status colors — single source of truth for charts + badges */
+  --status-healthy: oklch(0.7 0.15 162);
+  --status-opened: oklch(0.77 0.16 70);
+  --status-low: oklch(0.64 0.21 25);
+  --status-almost-finished: oklch(0.7 0.19 48);
   --sidebar: oklch(0.99 0.004 85 / 0.72);
   --sidebar-foreground: oklch(0.28 0.015 265);
   --sidebar-primary: oklch(0.22 0.015 265);
@@ -99,6 +104,11 @@
   --accent: oklch(0.23 0.018 265);
   --accent-foreground: oklch(0.94 0.005 85);
   --destructive: oklch(0.704 0.191 22.216);
+  /* Slightly brighter status hues for dark surfaces */
+  --status-healthy: oklch(0.75 0.15 162);
+  --status-opened: oklch(0.8 0.15 70);
+  --status-low: oklch(0.68 0.2 25);
+  --status-almost-finished: oklch(0.74 0.18 48);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 14%);
   --ring: oklch(0.58 0.04 265 / 0.55);
@@ -211,9 +221,17 @@
     /* Solid fallback for browsers/devices without backdrop-filter support */
     background-color: var(--sidebar);
     @apply supports-[backdrop-filter]:backdrop-blur-3xl supports-[backdrop-filter]:bg-sidebar/60;
+    /* LTR: sidebar on the left — hairline on inner-right edge, shadow cast right */
     box-shadow:
       inset -1px 0 0 oklch(1 0 0 / 5%),
       4px 0 24px oklch(0 0 0 / 3%);
+  }
+
+  /* RTL: sidebar on the right — mirror the hairline and shadow direction */
+  [dir="rtl"] .glass-sidebar {
+    box-shadow:
+      inset 1px 0 0 oklch(1 0 0 / 5%),
+      -4px 0 24px oklch(0 0 0 / 3%);
   }
 
   .dark .glass-sidebar {
@@ -221,6 +239,13 @@
     box-shadow:
       inset -1px 0 0 oklch(1 0 0 / 8%),
       4px 0 32px oklch(0 0 0 / 25%);
+  }
+
+  [dir="rtl"] .dark .glass-sidebar,
+  .dark [dir="rtl"] .glass-sidebar {
+    box-shadow:
+      inset 1px 0 0 oklch(1 0 0 / 8%),
+      -4px 0 32px oklch(0 0 0 / 25%);
   }
 
   .glass-bar {
@@ -272,6 +297,13 @@
   @keyframes shimmer {
     100% {
       transform: translateX(100%);
+    }
+  }
+
+  /* Respect reduced-motion: freeze the shimmer sweep (skeletons stay static) */
+  @media (prefers-reduced-motion: reduce) {
+    .shimmer {
+      animation: none;
     }
   }
 

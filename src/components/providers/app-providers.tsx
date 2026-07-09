@@ -1,6 +1,7 @@
 "use client"
 
 import { Toaster } from "sonner"
+import { MotionConfig } from "framer-motion"
 
 import { ShellProvider } from "@/contexts/shell-context"
 import { ThemeProvider } from "@/components/providers/theme-provider"
@@ -13,6 +14,9 @@ type AppProvidersProps = {
 export function AppProviders({ children, dir = "rtl" }: AppProvidersProps) {
   return (
     <ThemeProvider>
+      {/* reducedMotion="user" collapses transform animations to opacity-only
+          for users with prefers-reduced-motion enabled */}
+      <MotionConfig reducedMotion="user">
       <ShellProvider>
         {children}
         <Toaster
@@ -30,6 +34,7 @@ export function AppProviders({ children, dir = "rtl" }: AppProvidersProps) {
           closeButton
         />
       </ShellProvider>
+      </MotionConfig>
     </ThemeProvider>
   )
 }

@@ -20,6 +20,8 @@ export const staggerItem = {
 export const pageTransition = {
   initial: { opacity: 0, y: 8 },
   animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -6 },
-  transition: { duration: 0.32, ease: easePremium },
+  // Short exit keeps navigation feeling instant — a long symmetric exit under
+  // AnimatePresence mode="wait" leaves a visible blank frame between routes.
+  exit: { opacity: 0, transition: { duration: 0.12 } },
+  transition: { duration: 0.28, ease: easePremium },
 }

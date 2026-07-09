@@ -40,7 +40,7 @@ export function InsightsWidgets({ insights }: { insights: InsightData[] }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 + i * 0.06, duration: 0.35 }}
             whileHover={{ y: -2 }}
-            className={cn("glass-card rounded-2xl bg-gradient-to-br p-4", style.bg)}
+            className={cn("glass-card rounded-3xl bg-gradient-to-br p-4", style.bg)}
           >
             <div className="flex gap-3">
               <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-xl", style.iconBg)}>

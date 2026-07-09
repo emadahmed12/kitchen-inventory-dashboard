@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { useTranslations } from "next-intl"
+import { useState, useTransition } from "react"
+import { useLocale, useTranslations } from "next-intl"
 import { motion } from "framer-motion"
 import { useTheme } from "next-themes"
 import { toast } from "sonner"
@@ -9,7 +9,8 @@ import { Languages, Palette, Database, Info, Sun, Moon, Monitor } from "lucide-r
 
 import { PageContainer } from "@/components/ui/page-container"
 import { Button } from "@/components/ui/button"
-import { LanguageSwitcher } from "@/components/layout/language-switcher"
+import { routing } from "@/i18n/routing"
+import { usePathname, useRouter } from "@/i18n/navigation"
 import { useInventoryStore } from "@/store/inventory-store"
 import { staggerContainer, staggerItem } from "@/lib/motion"
 import {
@@ -51,9 +52,19 @@ function SettingsSection({
 
 export function SettingsPage() {
   const t = useTranslations("settings")
+  const tLang = useTranslations("language")
   const { theme, setTheme } = useTheme()
+  const locale = useLocale()
+  const router = useRouter()
+  const pathname = usePathname()
+  const [, startTransition] = useTransition()
   const resetToSeed = useInventoryStore((s) => s.resetToSeed)
   const [resetOpen, setResetOpen] = useState(false)
+
+  function switchLocale(next: string) {
+    if (next === locale) return
+    startTransition(() => router.replace(pathname, { locale: next }))
+  }
 
   function handleReset() {
     resetToSeed()
@@ -80,10 +91,26 @@ export function SettingsPage() {
         animate="show"
         className="flex flex-col gap-4"
       >
-        {/* Language */}
+        {/* Language — segmented control, mirrors the theme picker pattern */}
         <motion.div variants={staggerItem}>
           <SettingsSection icon={Languages} title={t("language")} description={t("languageDesc")}>
-            <LanguageSwitcher />
+            <div className="flex gap-2 flex-wrap">
+              {routing.locales.map((l) => (
+                <button
+                  key={l}
+                  onClick={() => switchLocale(l)}
+                  aria-pressed={locale === l}
+                  className={cn(
+                    "rounded-xl border px-3.5 py-2 text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    locale === l
+                      ? "border-primary/50 bg-primary/10 text-primary"
+                      : "border-border/50 bg-muted/30 text-muted-foreground hover:border-border hover:text-foreground"
+                  )}
+                >
+                  {tLang(l as "ar" | "en")}
+                </button>
+              ))}
+            </div>
           </SettingsSection>
         </motion.div>
 
@@ -96,7 +123,7 @@ export function SettingsPage() {
                   key={id}
                   onClick={() => setTheme(id)}
                   className={cn(
-                    "flex items-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-medium transition-all",
+                    "flex items-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     theme === id
                       ? "border-primary/50 bg-primary/10 text-primary"
                       : "border-border/50 bg-muted/30 text-muted-foreground hover:border-border hover:text-foreground"

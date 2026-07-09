@@ -8,11 +8,13 @@ import { STATUS_COLORS } from "@/lib/inventory/constants"
 import type { InventoryStatus } from "@/types/inventory"
 import { cn } from "@/lib/utils"
 
+// References the --status-* tokens in globals.css so light/dark values
+// stay in sync with the rest of the status system.
 const STATUS_CHART_COLORS: Record<InventoryStatus, string> = {
-  healthy: "#10b981",
-  opened: "#f59e0b",
-  low: "#ef4444",
-  almost_finished: "#f97316",
+  healthy: "var(--status-healthy)",
+  opened: "var(--status-opened)",
+  low: "var(--status-low)",
+  almost_finished: "var(--status-almost-finished)",
 }
 
 type StatusChartProps = {

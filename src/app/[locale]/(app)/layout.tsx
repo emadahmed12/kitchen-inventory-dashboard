@@ -13,8 +13,11 @@ import { SupabaseSyncProvider } from "@/components/providers/supabase-sync-provi
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <SupabaseSyncProvider>
-      <OfflineIndicator />
-      <AppShell>{children}</AppShell>
+      {/* Column so the offline banner pushes the shell down instead of covering it */}
+      <div className="flex h-dvh flex-col">
+        <OfflineIndicator />
+        <AppShell>{children}</AppShell>
+      </div>
     </SupabaseSyncProvider>
   )
 }

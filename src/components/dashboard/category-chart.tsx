@@ -123,7 +123,7 @@ export function CategoryChart({ data }: CategoryChartProps) {
              */}
             <Bar
               dataKey="value"
-              fill="oklch(0.55 0.08 265)"
+              fill="var(--chart-5)"
               radius={[0, 8, 8, 0]}
               maxBarSize={14}
             />

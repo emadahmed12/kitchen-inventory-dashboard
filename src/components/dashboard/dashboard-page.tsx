@@ -61,25 +61,25 @@ export function DashboardPage() {
       <motion.div variants={staggerContainer} initial="hidden" animate="show" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <motion.div variants={staggerItem}>
           <StatCard
-            title={t("total")} value={stats.total.toLocaleString()} hint={t("totalHint")}
+            title={t("total")} value={stats.total.toLocaleString()}
             icon={Boxes} href="/inventory" ariaLabel={t("totalAriaLabel")}
           />
         </motion.div>
         <motion.div variants={staggerItem}>
           <StatCard
-            title={t("opened")} value={stats.opened.toLocaleString()} hint={t("openedHint")}
+            title={t("opened")} value={stats.opened.toLocaleString()}
             icon={FolderOpen} index={1} href="/inventory?status=opened" ariaLabel={t("openedAriaLabel")}
           />
         </motion.div>
         <motion.div variants={staggerItem}>
           <StatCard
-            title={t("needsAttention")} value={stats.needsAttention.toLocaleString()} hint={t("needsAttentionHint")}
+            title={t("needsAttention")} value={stats.needsAttention.toLocaleString()}
             icon={AlertTriangle} index={2} href="/inventory?status=needsAttention" ariaLabel={t("needsAttentionAriaLabel")}
           />
         </motion.div>
         <motion.div variants={staggerItem}>
           <StatCard
-            title={t("categories")} value={stats.categories.toLocaleString()} hint={t("categoriesHint")}
+            title={t("categories")} value={stats.categories.toLocaleString()}
             icon={Tags} index={3} href="/analytics" ariaLabel={t("categoriesAriaLabel")}
           />
         </motion.div>

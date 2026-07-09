@@ -19,7 +19,7 @@ export async function generateMetadata({
 
 export default async function LoginPage({ params, searchParams }: LoginPageProps) {
   const { locale } = await params
-  const { next } = await searchParams
+  const { next, error } = await searchParams
   const t = await getTranslations({ locale, namespace: "auth" })
 
   const redirectTo = next ?? (locale === "en" ? "/en" : "/")
@@ -40,6 +40,16 @@ export default async function LoginPage({ params, searchParams }: LoginPageProps
             <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
           </div>
         </div>
+
+        {/* OAuth callback error (e.g. cancelled Google sign-in) */}
+        {error && (
+          <div
+            role="alert"
+            className="mb-4 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+          >
+            {t("errorGeneral")}
+          </div>
+        )}
 
         {/* Auth form card */}
         <div className="glass-card rounded-3xl border border-border/50 p-6 shadow-xl">

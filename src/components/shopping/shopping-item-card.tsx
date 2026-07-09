@@ -148,7 +148,7 @@ export function ShoppingItemCard({
           ) : (
             <button
               onClick={() => { setQtyInput(String(item.boughtQty)); setEditingQty(true) }}
-              className="h-10 min-w-[3rem] rounded-xl border border-border/50 bg-muted/30 px-3 text-sm font-semibold tabular-nums hover:border-border"
+              className="h-10 min-w-[3rem] rounded-xl border border-border/50 bg-muted/30 px-3 text-sm font-semibold tabular-nums hover:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {item.boughtQty}
             </button>
@@ -179,7 +179,7 @@ export function ShoppingItemCard({
             className="rounded-xl h-10 text-xs px-3 gap-1 ms-auto"
             onClick={() => onStateChange(item.id, "purchased")}
           >
-            <Check className="size-3.5" strokeWidth={2.5} />
+            <Check className="size-3.5" strokeWidth={2} />
             {t("quickActions.markDone")}
           </Button>
 
@@ -198,7 +198,7 @@ export function ShoppingItemCard({
       {/* Purchased big button */}
       {item.state === "purchased" && (
         <div className="flex items-center gap-2 text-sm text-emerald-500 font-medium">
-          <Check className="size-4" strokeWidth={2.5} />
+          <Check className="size-4" strokeWidth={2} />
           {t("bought")}: {item.boughtQty} {item.unit}
         </div>
       )}

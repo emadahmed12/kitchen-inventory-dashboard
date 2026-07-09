@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl"
 
 import { InventoryCard } from "@/components/inventory/inventory-card"
 import { InventoryListRow } from "@/components/inventory/inventory-list-row"
+import { EmptyState } from "@/components/ui/empty-state"
 import { ShimmerSkeleton } from "@/components/ui/shimmer-skeleton"
 import type { InventoryItem } from "@/types/inventory"
 import type { ViewMode } from "@/types/ui"
@@ -35,19 +36,11 @@ export function InventoryView({
 
   if (items.length === 0) {
     return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 bg-muted/15 px-6 py-20 text-center"
-      >
-        <div className="mb-4 flex size-16 items-center justify-center rounded-2xl bg-muted/40 ring-1 ring-foreground/[0.06]">
-          <PackageOpen className="size-7 text-muted-foreground" strokeWidth={1.25} />
-        </div>
-        <p className="text-base font-semibold">{t("emptyTitle")}</p>
-        <p className="mt-2 max-w-xs text-sm text-muted-foreground">
-          {t("emptyDesc")}
-        </p>
-      </motion.div>
+      <EmptyState
+        icon={PackageOpen}
+        title={t("emptyTitle")}
+        description={t("emptyDesc")}
+      />
     )
   }
 

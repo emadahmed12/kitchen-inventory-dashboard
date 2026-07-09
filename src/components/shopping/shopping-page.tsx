@@ -17,6 +17,7 @@ import {
 } from "lucide-react"
 
 import { PageContainer } from "@/components/ui/page-container"
+import { EmptyState } from "@/components/ui/empty-state"
 import { ShimmerSkeleton } from "@/components/ui/shimmer-skeleton"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -44,7 +45,7 @@ function SessionProgressBar({ purchased, partial, skipped, total }: {
         <span className="font-semibold">{t("title")}</span>
         <span>{t("of", { done: purchased + partial, total })}</span>
       </div>
-      <div className="h-2 w-full rounded-full bg-muted/50 overflow-hidden">
+      <div className="h-2 w-full rounded-full bg-muted/50 overflow-hidden" role="progressbar" aria-valuenow={pctDone} aria-valuemin={0} aria-valuemax={100} aria-label={t("title")}>
         <motion.div
           className="h-full rounded-full bg-primary"
           initial={{ width: 0 }}
@@ -193,28 +194,23 @@ function PreSessionView() {
 
       {/* Empty state */}
       {listItems.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border/50 bg-muted/15 px-6 py-24 text-center gap-4"
-        >
-          <div className="flex size-16 items-center justify-center rounded-2xl bg-emerald-500/10 ring-1 ring-emerald-500/20">
-            <ShoppingCart className="size-7 text-emerald-500" strokeWidth={1.25} />
-          </div>
-          <div>
-            <p className="text-base font-semibold">{t("emptyList")}</p>
-            <p className="mt-1 max-w-xs text-sm text-muted-foreground">{t("emptyListDesc")}</p>
-          </div>
-          <Button onClick={() => setAddFormOpen(true)} variant="outline" className="gap-2 rounded-xl">
-            <Plus className="size-4" strokeWidth={2} />
-            {t("addManualItem")}
-          </Button>
-        </motion.div>
+        <EmptyState
+          icon={ShoppingCart}
+          tone="success"
+          title={t("emptyList")}
+          description={t("emptyListDesc")}
+          action={
+            <Button onClick={() => setAddFormOpen(true)} variant="outline" className="gap-2 rounded-xl">
+              <Plus className="size-4" strokeWidth={2} />
+              {t("addManualItem")}
+            </Button>
+          }
+        />
       ) : (
         <>
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
-              {listItems.length} {listItems.length === 1 ? "منتج" : "منتجات"}
+              {t("listCount", { count: listItems.length })}
             </p>
             <Button variant="ghost" size="sm" onClick={clearList} className="text-xs gap-1 rounded-xl text-muted-foreground">
               <Trash2 className="size-3.5" strokeWidth={1.75} />
@@ -281,23 +277,25 @@ function PreSessionItem({
         <button
           onClick={() => onQtyChange(item.neededQty - 1)}
           disabled={item.neededQty <= 1}
-          className="flex size-7 items-center justify-center rounded-lg border border-border/50 bg-muted/30 text-muted-foreground hover:text-foreground disabled:opacity-30"
+          aria-label={t("quickActions.add1")}
+          className="flex size-10 items-center justify-center rounded-xl border border-border/50 bg-muted/30 text-muted-foreground hover:text-foreground disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <Minus className="size-3" strokeWidth={2} />
+          <Minus className="size-3.5" strokeWidth={2} />
         </button>
-        <span className="w-6 text-center text-sm font-semibold tabular-nums">{item.neededQty}</span>
+        <span className="w-7 text-center text-sm font-semibold tabular-nums">{item.neededQty}</span>
         <button
           onClick={() => onQtyChange(item.neededQty + 1)}
-          className="flex size-7 items-center justify-center rounded-lg border border-border/50 bg-muted/30 text-muted-foreground hover:text-foreground"
+          aria-label={t("quickActions.add1")}
+          className="flex size-10 items-center justify-center rounded-xl border border-border/50 bg-muted/30 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <Plus className="size-3" strokeWidth={2} />
+          <Plus className="size-3.5" strokeWidth={2} />
         </button>
         <span className="text-xs text-muted-foreground w-6">{item.unit}</span>
       </div>
       <button
         onClick={onRemove}
-        className="ms-1 text-muted-foreground hover:text-destructive transition-colors"
-        aria-label="Remove"
+        className="ms-1 flex size-10 items-center justify-center rounded-xl text-muted-foreground hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        aria-label={t("removeFromList")}
       >
         <X className="size-4" strokeWidth={1.75} />
       </button>

@@ -96,7 +96,7 @@ export function MoveItemsDialog({
           <button
             type="button"
             onClick={toggleAll}
-            className="flex items-center gap-2 self-start text-xs font-medium text-muted-foreground hover:text-foreground"
+            className="flex items-center gap-2 self-start rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {allSelected ? (
               <CheckSquare className="size-3.5" strokeWidth={1.75} />
@@ -115,7 +115,7 @@ export function MoveItemsDialog({
                     type="button"
                     onClick={() => toggle(item.id)}
                     className={cn(
-                      "flex w-full items-center gap-2.5 rounded-xl border px-3 py-2 text-start text-sm transition-colors",
+                      "flex w-full items-center gap-2.5 rounded-xl border px-3 py-2 text-start text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                       isSelected
                         ? "border-primary/40 bg-primary/5"
                         : "border-border/40 bg-muted/20 opacity-60"

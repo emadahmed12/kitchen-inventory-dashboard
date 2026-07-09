@@ -19,16 +19,20 @@ export function OfflineIndicator() {
       {!online && (
         <motion.div
           key="offline-banner"
-          initial={{ y: -48, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -48, opacity: 0 }}
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           role="alert"
           aria-live="assertive"
-          className="fixed inset-x-0 top-0 z-[60] flex items-center justify-center gap-2 bg-amber-500 px-4 py-2 text-xs font-medium text-white"
+          // In normal flow (not fixed) so it pushes the app down instead of
+          // covering the topbar — navigation stays reachable while offline.
+          className="w-full shrink-0 overflow-hidden bg-amber-500 text-white"
         >
-          <WifiOff className="size-3.5" strokeWidth={2} />
-          {t("offline")}
+          <div className="flex items-center justify-center gap-2 px-4 py-2 text-xs font-medium">
+            <WifiOff className="size-3.5" strokeWidth={2} />
+            {t("offline")}
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

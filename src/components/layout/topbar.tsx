@@ -14,6 +14,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useShell } from "@/contexts/shell-context"
 import { getLowStockItems } from "@/lib/inventory/stats"
@@ -53,7 +54,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
       <button
         type="button"
         onClick={() => setCommandOpen(true)}
-        className={cn("relative hidden min-w-0 flex-1 items-center md:flex md:max-w-sm lg:max-w-md")}
+        className={cn("relative hidden min-w-0 flex-1 items-center rounded-2xl md:flex md:max-w-sm lg:max-w-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring")}
       >
         <Search
           className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
@@ -112,6 +113,17 @@ export function Topbar({ onMenuClick }: TopbarProps) {
 
         {/* Notifications */}
         <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon-sm" className="relative rounded-xl" aria-label={t("notifications")}>
+              <Bell className="size-4" strokeWidth={1.75} />
+              {alerts.length > 0 && (
+                <span className="absolute top-1 end-1 flex size-2">
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-400 opacity-60" />
+                  <span className="relative inline-flex size-2 rounded-full bg-red-500" />
+                </span>
+              )}
+            </Button>
+          </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-72 rounded-2xl p-2">
             <p className="px-2 py-1.5 text-xs font-semibold">{t("notifications")}</p>
             {alerts.length === 0 ? (
@@ -129,15 +141,6 @@ export function Topbar({ onMenuClick }: TopbarProps) {
               ))
             )}
           </DropdownMenuContent>
-          <Button variant="ghost" size="icon-sm" className="relative rounded-xl" aria-label={t("notifications")}>
-            <Bell className="size-4" strokeWidth={1.75} />
-            {alerts.length > 0 && (
-              <span className="absolute top-1 end-1 flex size-2">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-400 opacity-60" />
-                <span className="relative inline-flex size-2 rounded-full bg-red-500" />
-              </span>
-            )}
-          </Button>
         </DropdownMenu>
 
         {/* User menu — auth-aware */}
