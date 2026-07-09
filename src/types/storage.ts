@@ -24,6 +24,7 @@ export type UserStorageLocation = {
   capacity: number
   color?: string
   icon?: string
+  notes?: string
   isDefault: boolean
   createdAt: string
   updatedAt: string
@@ -36,6 +37,7 @@ export type StorageLocationInput = {
   capacity: number
   color?: string
   icon?: string
+  notes?: string
 }
 
 /** A lightweight occupancy row returned by computeLocationOccupancy. */

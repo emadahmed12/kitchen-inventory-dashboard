@@ -30,6 +30,7 @@ const DEFAULT_FORM: StorageLocationInput = {
   capacity: 10,
   color: "",
   icon: "",
+  notes: "",
 }
 
 type StorageFormDialogProps = {
@@ -101,6 +102,7 @@ export function StorageFormDialog({
               capacity: location.capacity,
               color: location.color ?? "",
               icon: location.icon ?? "",
+              notes: location.notes ?? "",
             }
           : DEFAULT_FORM
       )
@@ -116,6 +118,7 @@ export function StorageFormDialog({
       name: form.name.trim(),
       color: form.color?.trim() || undefined,
       icon: form.icon?.trim() || undefined,
+      notes: form.notes?.trim() || undefined,
     })
     onOpenChange(false)
   }
@@ -188,6 +191,18 @@ export function StorageFormDialog({
                 />
               )}
             </div>
+          </Field>
+
+          <Field label={t("form.notes")}>
+            <textarea
+              value={form.notes ?? ""}
+              onChange={(e) => setForm({ ...form, notes: e.target.value })}
+              placeholder={t("form.notesPlaceholder")}
+              maxLength={300}
+              rows={2}
+              disabled={isSaving}
+              className="flex w-full resize-none rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            />
           </Field>
 
           <DialogFooter className="gap-2 pt-2">

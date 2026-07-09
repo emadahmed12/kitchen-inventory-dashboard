@@ -51,6 +51,8 @@ type InventoryState = {
   updateItem: (id: string, input: InventoryItemInput) => void
   deleteItem: (id: string) => void
   updateQuantity: (id: string, quantity: number) => void
+  /** Reassign a batch of items to a new storage location. */
+  moveItems: (ids: string[], locationId: string) => void
   resetToSeed: () => void
 
   // Supabase sync helpers
@@ -124,6 +126,18 @@ export const useInventoryStore = create<InventoryState>()(
               updatedAt: new Date().toISOString(),
             }
           }),
+        }))
+        notifyInventoryChange()
+      },
+
+      moveItems: (ids, locationId) => {
+        const idSet = new Set(ids)
+        set((s) => ({
+          items: s.items.map((item) =>
+            idSet.has(item.id)
+              ? { ...item, location: locationId, updatedAt: new Date().toISOString() }
+              : item
+          ),
         }))
         notifyInventoryChange()
       },

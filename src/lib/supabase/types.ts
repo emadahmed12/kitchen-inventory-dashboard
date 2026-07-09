@@ -174,6 +174,7 @@ export type Database = {
           capacity: number
           color: string | null
           icon: string | null
+          notes: string | null
           is_default: boolean
           created_at: string
           updated_at: string
@@ -186,6 +187,7 @@ export type Database = {
           capacity?: number
           color?: string | null
           icon?: string | null
+          notes?: string | null
           is_default?: boolean
           created_at?: string
           updated_at?: string
@@ -196,6 +198,7 @@ export type Database = {
           capacity?: number
           color?: string | null
           icon?: string | null
+          notes?: string | null
           updated_at?: string
         }
         Relationships: Relationship[]

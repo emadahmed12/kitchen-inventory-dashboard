@@ -318,6 +318,8 @@
       "capacity": "السعة (عدد المنتجات)",
       "color": "اللون (اختياري)",
       "colorPlaceholder": "#3b82f6",
+      "notes": "ملاحظات (اختياري)",
+      "notesPlaceholder": "مثل: الرف السفلي للخضروات",
       "cancel": "إلغاء",
       "save": "حفظ",
       "add": "إضافة"
@@ -333,7 +335,18 @@
     "locations": "المواقع",
     "mostStored": "الأكثر تخزيناً",
     "offlineNote": "يتطلب تسجيل الدخول لحفظ التغييرات.",
-    "savedLocally": "محفوظ محلياً"
+    "savedLocally": "محفوظ محلياً",
+    "searchPlaceholder": "ابحث في المواقع...",
+    "filterAll": "الكل",
+    "noResults": "لا توجد مواقع مطابقة.",
+    "moveItems": "نقل المنتجات",
+    "moveItemsTitle": "نقل المنتجات من {name}",
+    "moveItemsDesc": "اختر المنتجات والموقع الجديد.",
+    "moveTarget": "الموقع الجديد",
+    "moveSelectAll": "تحديد الكل",
+    "moveConfirm": "نقل {count} منتج",
+    "moveSuccess": "تم نقل {count} منتج",
+    "moveNoSelection": "اختر منتجاً واحداً على الأقل"
   },
   "settings": {
     "title": "الإعدادات",

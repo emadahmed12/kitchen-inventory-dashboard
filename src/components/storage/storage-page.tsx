@@ -1,17 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useTranslations } from "next-intl"
 import { motion, AnimatePresence } from "framer-motion"
-import { Archive, Package, Pencil, Plus, Trash2 } from "lucide-react"
+import { Archive, ArrowLeftRight, Package, Pencil, Plus, Search, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
 import { PageContainer } from "@/components/ui/page-container"
 import { ShimmerSkeleton } from "@/components/ui/shimmer-skeleton"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
 import { StorageFormDialog } from "@/components/storage/storage-form-dialog"
 import { DeleteStorageDialog } from "@/components/storage/delete-storage-dialog"
+import { MoveItemsDialog } from "@/components/storage/move-items-dialog"
 import {
   useStorageLocations,
   useStorageActions,
@@ -20,7 +22,11 @@ import { useInventoryHydrated, useInventoryItems } from "@/hooks/use-inventory"
 import { staggerContainer, staggerItem } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 import { SUPABASE_ENABLED } from "@/lib/supabase/config"
-import type { StorageLocationInput, UserStorageLocation } from "@/types/storage"
+import type { StorageLocationInput, StorageType, UserStorageLocation } from "@/types/storage"
+
+const FILTER_TYPES: Array<StorageType | "all"> = [
+  "all", "fridge", "freezer", "pantry", "cabinet", "counter", "other",
+]
 
 // ── occupancy bar ─────────────────────────────────────────────────────────────
 
@@ -52,11 +58,13 @@ function StorageCard({
   items,
   onEdit,
   onDelete,
+  onMove,
 }: {
   location: UserStorageLocation
   items: ReturnType<typeof useInventoryItems>
   onEdit: (l: UserStorageLocation) => void
   onDelete: (l: UserStorageLocation) => void
+  onMove: (l: UserStorageLocation) => void
 }) {
   const t = useTranslations("storage")
   const locationItems = items.filter((i) => i.location === location.id)
@@ -118,6 +126,17 @@ function StorageCard({
           </span>
           {SUPABASE_ENABLED && (
             <>
+              {locationItems.length > 0 && (
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  className="rounded-xl opacity-60 hover:opacity-100"
+                  onClick={() => onMove(location)}
+                  aria-label={t("moveItems")}
+                >
+                  <ArrowLeftRight className="size-3.5" strokeWidth={1.75} />
+                </Button>
+              )}
               <Button
                 variant="ghost"
                 size="icon-sm"
@@ -145,6 +164,13 @@ function StorageCard({
 
       {/* Occupancy bar */}
       <OccupancyBar pct={pct} color={location.color} />
+
+      {/* Notes */}
+      {location.notes && (
+        <p className="text-xs italic text-muted-foreground/80 line-clamp-2">
+          {location.notes}
+        </p>
+      )}
 
       {/* Item count */}
       <p className="text-xs text-muted-foreground">
@@ -186,11 +212,34 @@ export function StoragePage() {
   const hydrated = useInventoryHydrated()
   const items = useInventoryItems()
   const locations = useStorageLocations()
-  const { create, update, remove, isSaving, isDeleting } = useStorageActions()
+  const { create, update, remove, moveItems, isSaving, isDeleting } = useStorageActions()
 
   const [formOpen, setFormOpen] = useState(false)
   const [editingLocation, setEditingLocation] = useState<UserStorageLocation | null>(null)
   const [deletingLocation, setDeletingLocation] = useState<UserStorageLocation | null>(null)
+  const [movingLocation, setMovingLocation] = useState<UserStorageLocation | null>(null)
+  const [search, setSearch] = useState("")
+  const [typeFilter, setTypeFilter] = useState<StorageType | "all">("all")
+
+  const filteredLocations = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return locations.filter((l) => {
+      if (typeFilter !== "all" && l.type !== typeFilter) return false
+      if (q && !l.name.toLowerCase().includes(q) && !l.notes?.toLowerCase().includes(q)) return false
+      return true
+    })
+  }, [locations, search, typeFilter])
+
+  const movingItems = useMemo(
+    () => (movingLocation ? items.filter((i) => i.location === movingLocation.id) : []),
+    [items, movingLocation]
+  )
+
+  async function handleMoveConfirm(itemIds: string[], targetId: string) {
+    const ok = await moveItems(itemIds, targetId)
+    if (ok) toast.success(t("moveSuccess", { count: itemIds.length }))
+    return ok
+  }
 
   function handleEdit(location: UserStorageLocation) {
     setEditingLocation(location)
@@ -265,6 +314,37 @@ export function StoragePage() {
         <p className="text-xs text-muted-foreground/70 italic">{t("offlineNote")}</p>
       )}
 
+      {/* Search + type filter */}
+      {locations.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <div className="relative max-w-sm">
+            <Search className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" strokeWidth={1.75} />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t("searchPlaceholder")}
+              className="rounded-xl ps-9"
+            />
+          </div>
+          <div className="flex gap-1.5 flex-wrap">
+            {FILTER_TYPES.map((tp) => (
+              <button
+                key={tp}
+                onClick={() => setTypeFilter(tp)}
+                className={cn(
+                  "rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors",
+                  typeFilter === tp
+                    ? "border-primary/50 bg-primary/10 text-primary"
+                    : "border-border/50 bg-muted/30 text-muted-foreground hover:border-border hover:text-foreground"
+                )}
+              >
+                {tp === "all" ? t("filterAll") : t(`types.${tp}`)}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Empty state */}
       {locations.length === 0 ? (
         <motion.div
@@ -287,6 +367,8 @@ export function StoragePage() {
             </Button>
           )}
         </motion.div>
+      ) : filteredLocations.length === 0 ? (
+        <p className="py-12 text-center text-sm text-muted-foreground">{t("noResults")}</p>
       ) : (
         <motion.div
           variants={staggerContainer}
@@ -295,13 +377,14 @@ export function StoragePage() {
           className="grid gap-4 sm:grid-cols-2"
         >
           <AnimatePresence mode="popLayout">
-            {locations.map((loc) => (
+            {filteredLocations.map((loc) => (
               <StorageCard
                 key={loc.id}
                 location={loc}
                 items={items}
                 onEdit={handleEdit}
                 onDelete={setDeletingLocation}
+                onMove={setMovingLocation}
               />
             ))}
           </AnimatePresence>
@@ -323,6 +406,15 @@ export function StoragePage() {
         onOpenChange={(open) => !open && setDeletingLocation(null)}
         onConfirm={handleDeleteConfirm}
         isDeleting={isDeleting}
+      />
+
+      <MoveItemsDialog
+        open={Boolean(movingLocation)}
+        onOpenChange={(open) => !open && setMovingLocation(null)}
+        sourceLocation={movingLocation}
+        items={movingItems}
+        locations={locations}
+        onConfirm={handleMoveConfirm}
       />
     </PageContainer>
   )

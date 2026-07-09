@@ -10,7 +10,9 @@ import {
   updateStorageLocation,
   deleteStorageLocation,
   seedDefaultStorageLocations,
+  moveItemsToLocation,
 } from "@/lib/supabase/storage-actions"
+import { useInventoryStore } from "@/store/inventory-store"
 import {
   useStorageStore,
   selectStorageLocations,
@@ -82,16 +84,18 @@ export function useStorageLocations() {
 
   // In offline/dev mode fall back to static catalog
   if (!SUPABASE_ENABLED || !isLoaded) {
-    return STORAGE_LOCATIONS.map((l) => ({
-      id: l.id,
-      userId: "",
-      name: l.label,
-      type: "other" as const,
-      capacity: l.capacity,
-      isDefault: true,
-      createdAt: "",
-      updatedAt: "",
-    })) satisfies UserStorageLocation[]
+    return STORAGE_LOCATIONS.map(
+      (l): UserStorageLocation => ({
+        id: l.id,
+        userId: "",
+        name: l.label,
+        type: "other",
+        capacity: l.capacity,
+        isDefault: true,
+        createdAt: "",
+        updatedAt: "",
+      })
+    )
   }
 
   return dbLocations
@@ -173,5 +177,40 @@ export function useStorageActions() {
     [storeDeleteLocation]
   )
 
-  return { create, update, remove, isSaving, isDeleting }
+  /**
+   * Move items to another location.
+   * Optimistic: the Zustand store updates immediately; if the Supabase
+   * write fails the previous locations are restored per item.
+   */
+  const moveItems = useCallback(
+    async (itemIds: string[], targetLocationId: string): Promise<boolean> => {
+      if (itemIds.length === 0) return false
+
+      // Snapshot previous locations for rollback
+      const previous = new Map(
+        useInventoryStore
+          .getState()
+          .items.filter((i) => itemIds.includes(i.id))
+          .map((i) => [i.id, i.location])
+      )
+
+      useInventoryStore.getState().moveItems(itemIds, targetLocationId)
+
+      if (SUPABASE_ENABLED) {
+        try {
+          await moveItemsToLocation(itemIds, targetLocationId)
+        } catch {
+          // Rollback each item to its original location
+          const { moveItems: storeMove } = useInventoryStore.getState()
+          for (const [id, loc] of previous) storeMove([id], loc)
+          toast.error("Failed to move items.")
+          return false
+        }
+      }
+      return true
+    },
+    []
+  )
+
+  return { create, update, remove, moveItems, isSaving, isDeleting }
 }

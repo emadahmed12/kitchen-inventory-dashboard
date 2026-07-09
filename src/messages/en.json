@@ -318,6 +318,8 @@
       "capacity": "Capacity (max items)",
       "color": "Colour (optional)",
       "colorPlaceholder": "#3b82f6",
+      "notes": "Notes (optional)",
+      "notesPlaceholder": "e.g. Bottom shelf for vegetables",
       "cancel": "Cancel",
       "save": "Save changes",
       "add": "Add"
@@ -333,7 +335,18 @@
     "locations": "Locations",
     "mostStored": "Most stored",
     "offlineNote": "Sign in to save changes to the cloud.",
-    "savedLocally": "Saved locally"
+    "savedLocally": "Saved locally",
+    "searchPlaceholder": "Search locations...",
+    "filterAll": "All",
+    "noResults": "No matching locations.",
+    "moveItems": "Move items",
+    "moveItemsTitle": "Move items from {name}",
+    "moveItemsDesc": "Select the items and their new location.",
+    "moveTarget": "New location",
+    "moveSelectAll": "Select all",
+    "moveConfirm": "Move {count} item(s)",
+    "moveSuccess": "Moved {count} item(s)",
+    "moveNoSelection": "Select at least one item"
   },
   "settings": {
     "title": "Settings",

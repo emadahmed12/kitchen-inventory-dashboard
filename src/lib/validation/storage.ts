@@ -27,6 +27,11 @@ export const storageLocationSchema = z.object({
     .optional()
     .or(z.literal("")),
   icon: z.string().max(30).optional(),
+  notes: z
+    .string()
+    .max(300, "Notes must be 300 characters or fewer")
+    .optional()
+    .transform((v) => v?.trim() || undefined),
 })
 
 export type StorageLocationSchemaOutput = z.output<typeof storageLocationSchema>

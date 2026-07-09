@@ -16,6 +16,7 @@ function dbToLocal(row: DbStorageLocation): UserStorageLocation {
     capacity: row.capacity,
     color: row.color ?? undefined,
     icon: row.icon ?? undefined,
+    notes: row.notes ?? undefined,
     isDefault: row.is_default,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -98,6 +99,7 @@ export async function createStorageLocation(
       capacity: validated.capacity,
       color: validated.color ?? null,
       icon: validated.icon ?? null,
+      notes: validated.notes ?? null,
       is_default: false,
     })
     .select()
@@ -123,6 +125,7 @@ export async function updateStorageLocation(
       capacity: validated.capacity,
       color: validated.color ?? null,
       icon: validated.icon ?? null,
+      notes: validated.notes ?? null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", id)
@@ -132,6 +135,23 @@ export async function updateStorageLocation(
 
   if (error) throw new Error(error.message)
   return dbToLocal(data)
+}
+
+/** Move a batch of inventory items to a different storage location. */
+export async function moveItemsToLocation(
+  itemIds: string[],
+  targetLocationId: string
+): Promise<void> {
+  const { supabase, user } = await getClient()
+  if (itemIds.length === 0) return
+
+  const { error } = await supabase
+    .from("inventory_items")
+    .update({ location: targetLocationId, updated_at: new Date().toISOString() })
+    .in("id", itemIds)
+    .eq("user_id", user.id)
+
+  if (error) throw new Error(error.message)
 }
 
 /** Delete a storage location (only if it has no items assigned). */
